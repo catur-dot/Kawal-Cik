@@ -94,7 +94,7 @@
     <button class="btn-logout" onclick="logout()">Logout</button>
 
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau Alamat">
+        <input type="text" id="search" placeholder="Cari Nama atau Alamat" onkeyup="searchOrder()">
         <button onclick="searchOrder()">Search</button>
     </div>
 
@@ -176,11 +176,13 @@
         }
     }
 
-    function loadData() {
+    function loadData(filteredData = null) {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
 
-        dataTeknisi.forEach((item, index) => {
+        let dataToDisplay = filteredData || dataTeknisi;
+
+        dataToDisplay.forEach((item, index) => {
             let newRow = tableBody.insertRow();
             newRow.innerHTML = `
                 <td>${index + 1}</td>
@@ -205,7 +207,6 @@
 
     function searchOrder() {
         let keyword = document.getElementById("search").value.toLowerCase();
-        dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
         let filteredData = dataTeknisi.filter(item => item.nama.toLowerCase().includes(keyword) || item.alamat.toLowerCase().includes(keyword));
         loadData(filteredData);
     }
