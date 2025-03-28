@@ -1,62 +1,64 @@
+/* Styling Login */
 body {
     font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    text-align: center;
     background: linear-gradient(90deg, #7b5cff, #e14eca);
-    margin: 0;
+    color: white;
+    padding: 50px;
 }
 
-.container {
-    display: flex;
+.login-container {
     background: white;
+    color: black;
+    padding: 20px;
     border-radius: 10px;
-    overflow: hidden;
+    display: inline-block;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.quote-section {
-    background: #1a1a2e;
-    color: white;
-    padding: 40px;
-    width: 300px;
-    text-align: center;
-}
-
-.login-section {
-    padding: 40px;
-    width: 300px;
-}
-
-h2 {
-    margin-bottom: 10px;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    margin: 10px 0;
+input, button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px;
+    width: 80%;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 button {
-    width: 100%;
-    padding: 10px;
     background: #7b5cff;
-    border: none;
     color: white;
+    border: none;
     cursor: pointer;
-    border-radius: 5px;
 }
 
 button:hover {
     background: #5936ff;
 }
 
-#message {
-    color: red;
-    text-align: center;
+/* Styling Dashboard */
+.dashboard-container {
+    background: white;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%;
+    margin: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+table {
+    width: 100%;
     margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background: #7b5cff;
+    color: white;
 }
