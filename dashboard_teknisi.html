@@ -74,105 +74,147 @@
     </style>
 </head>
 <body onload="loadData()">
-    <div class="container">
-        <h2>Dashboard Teknisi</h2>
-        <button class="btn-logout" onclick="logout()">Logout</button>
-        <div class="search-bar">
-            <input type="text" id="search" placeholder="Cari Nama atau ND">
-            <button onclick="searchOrder()">Cari</button>
-        </div>
-        <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
-        <table id="orderTable">
-            <thead>
-                <tr>
-                    <th>NO</th>
-                    <th>NAMA</th>
-                    <th>ND</th>
-                    <th>ALAMAT</th>
-                    <th>AKSI</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+
+<div class="container">
+    <h2>Dashboard Teknisi</h2>
+
+    <button class="btn-logout" onclick="logout()">Logout</button>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Cari Nama atau Alamat">
+        <button onclick="searchOrder()">Search</button>
     </div>
-    <div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
-        <h3>Tambah Data Baru</h3>
-        <input type="text" id="nama" placeholder="Nama"><br><br>
-        <input type="text" id="nd" placeholder="ND"><br><br>
-        <input type="text" id="alamat" placeholder="Alamat"><br><br>
-        <button onclick="addData()">Tambah</button>
-        <button onclick="closeModal()">Tutup</button>
-    </div>
-    <script>
-        let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-        let username = localStorage.getItem("username");
-        
-        function loadData() {
-            let tbody = document.querySelector("#orderTable tbody");
-            tbody.innerHTML = "";
-            dataTeknisi.forEach((data, index) => {
-                let row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${data.nama}</td>
-                    <td>${data.nd}</td>
-                    <td>${data.alamat}</td>
-                    <td>${username === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-            if (username !== "24960059") {
-                document.getElementById("btn-add").style.display = "none";
-            }
+
+    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>NO</th>
+                <th>NAMA</th>
+                <th>ALAMAT</th>
+                <th>ND</th>
+                <th>ODP</th>
+                <th>TAGGINGAN RUMAH</th>
+                <th>ODC</th>
+                <th>CP</th>
+                <th>REDAMAN</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Modal Form -->
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+    <h3>Tambah Data Baru</h3>
+    <input type="text" id="nama" placeholder="Nama"><br><br>
+    <input type="text" id="alamat" placeholder="Alamat"><br><br>
+    <input type="text" id="nd" placeholder="ND"><br><br>
+    <input type="text" id="odp" placeholder="ODP"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="odc" placeholder="ODC"><br><br>
+    <input type="text" id="cp" placeholder="CP"><br><br>
+    <input type="text" id="redaman" placeholder="Redaman"><br><br>
+    <button onclick="addData()">Tambah</button>
+    <button onclick="closeModal()">Tutup</button>
+</div>
+
+<script>
+    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+    let currentUser = localStorage.getItem("username");
+
+    function loadData() {
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+
+        dataTeknisi.forEach((item, index) => {
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td>
+                    ${currentUser === "24960059" ? `<button class="btn-delete" onclick="deleteRow(${index})">Hapus</button>` : ""}
+                </td>
+            `;
+        });
+
+        // Sembunyikan tombol tambah data jika bukan superadmin
+        if (currentUser !== "24960059") {
+            document.getElementById("btn-add").style.display = "none";
         }
-        
-        function openModal() {
-            if (username === "24960059") {
-                document.getElementById("dataModal").style.display = "block";
-            } else {
-                alert("Anda tidak memiliki izin untuk menambah data");
-            }
+    }
+
+    function openModal() {
+        if (currentUser === "24960059") {
+            document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki izin untuk menambah data");
         }
-        
-        function closeModal() {
-            document.getElementById("dataModal").style.display = "none";
-        }
-        
-        function addData() {
-            let nama = document.getElementById("nama").value;
-            let nd = document.getElementById("nd").value;
-            let alamat = document.getElementById("alamat").value;
-            dataTeknisi.push({ nama, nd, alamat });
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+    }
+
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+    }
+
+    function addData() {
+        let nama = document.getElementById("nama").value;
+        let alamat = document.getElementById("alamat").value;
+        let nd = document.getElementById("nd").value;
+        let odp = document.getElementById("odp").value;
+        let taggingan = document.getElementById("taggingan").value;
+        let odc = document.getElementById("odc").value;
+        let cp = document.getElementById("cp").value;
+        let redaman = document.getElementById("redaman").value;
+
+        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
+            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
+            saveToLocalStorage();
+            loadData();
             closeModal();
-            loadData();
+        } else {
+            alert("Semua kolom harus diisi!");
         }
-        
-        function deleteRow(index) {
+    }
+
+    function deleteRow(index) {
+        if (currentUser === "24960059") {
             dataTeknisi.splice(index, 1);
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            saveToLocalStorage();
             loadData();
+        } else {
+            alert("Anda tidak memiliki izin untuk menghapus data");
         }
-        
-        function searchOrder() {
-            let searchText = document.getElementById("search").value.toLowerCase();
-            let filteredData = dataTeknisi.filter(item => item.nama.toLowerCase().includes(searchText) || item.nd.includes(searchText));
-            let tbody = document.querySelector("#orderTable tbody");
-            tbody.innerHTML = "";
-            filteredData.forEach((data, index) => {
-                let row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${data.nama}</td>
-                    <td>${data.nd}</td>
-                    <td>${data.alamat}</td>
-                </tr>`;
-                tbody.innerHTML += row;
-            });
-        }
-        
-        function logout() {
-            localStorage.clear();
-            window.location.href = "index.html";
-        }
-    </script>
+    }
+
+    function searchOrder() {
+        let keyword = document.getElementById("search").value.toLowerCase();
+        let filteredData = dataTeknisi.filter(item =>
+            item.nama.toLowerCase().includes(keyword) ||
+            item.alamat.toLowerCase().includes(keyword)
+        );
+
+        dataTeknisi = filteredData;
+        loadData();
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = "index.html";
+    }
+</script>
+
 </body>
 </html>
