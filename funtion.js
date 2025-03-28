@@ -70,12 +70,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Captcha Generator
-function generateCaptcha() {
-    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    let captcha = "";
-    for (let i = 0; i < 5; i++) {
-        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("loginButton").addEventListener("click", function () {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        var role = document.getElementById("role").value;
+
+        // Validasi login untuk Teknisi
+        if (username === "admin" && password === "telkom135" && role === "Teknisi") {
+            alert("Login berhasil sebagai " + role);
+
+            // Simpan sesi login ke localStorage
+            localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("userRole", role);
+
+            // Redirect ke halaman dashboard
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Login gagal! Periksa username, password, dan role.");
+        }
+    });
+
+    // Cek jika sudah login, langsung ke dashboard
+    if (localStorage.getItem("isLoggedIn") === "true") {
+        window.location.href = "dashboard.html";
     }
-    document.getElementById("captchaText").innerText = captcha;
-}
+});
