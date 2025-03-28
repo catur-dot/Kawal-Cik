@@ -40,25 +40,6 @@
             background-color: darkred;
             color: white;
         }
-        .search-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .search-bar input {
-            padding: 8px;
-            width: 200px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .search-bar button {
-            padding: 8px;
-            background: darkred;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
         .btn-add {
             background: green;
             color: white;
@@ -75,31 +56,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
-            padding: 20px;
-            width: 50%;
-            border-radius: 10px;
-            text-align: center;
-        }
-        .close {
-            color: red;
-            float: right;
-            font-size: 28px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -107,13 +63,7 @@
 <div class="container">
     <h2>Dashboard Teknisi</h2>
 
-    <div class="search-bar">
-        <button class="btn-add" onclick="openModal()">Tambah Data</button>
-        <div>
-            <input type="text" id="search" placeholder="Cari Order ID">
-            <button onclick="searchOrder()">Search</button>
-        </div>
-    </div>
+    <button class="btn-add" onclick="openModal()">Tambah Data</button>
 
     <table id="orderTable">
         <thead>
@@ -127,52 +77,32 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th> <!-- Kolom baru untuk tombol delete -->
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            <!-- Data akan muncul di sini -->
+            <!-- Data akan diisi di sini -->
         </tbody>
     </table>
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h3>Tambah Data Baru</h3>
-        <input type="text" id="nama" placeholder="Nama" required><br><br>
-        <input type="text" id="alamat" placeholder="Alamat" required><br><br>
-        <input type="text" id="nd" placeholder="ND" required><br><br>
-        <input type="text" id="odp" placeholder="ODP" required><br><br>
-        <input type="text" id="taggingan" placeholder="Taggingan Rumah" required><br><br>
-        <input type="text" id="odc" placeholder="ODC" required><br><br>
-        <input type="text" id="cp" placeholder="CP" required><br><br>
-        <input type="text" id="redaman" placeholder="Redaman" required><br><br>
-        <button onclick="addData()">Tambah</button>
-    </div>
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+    <h3>Tambah Data Baru</h3>
+    <input type="text" id="nama" placeholder="Nama"><br><br>
+    <input type="text" id="alamat" placeholder="Alamat"><br><br>
+    <input type="text" id="nd" placeholder="ND"><br><br>
+    <input type="text" id="odp" placeholder="ODP"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="odc" placeholder="ODC"><br><br>
+    <input type="text" id="cp" placeholder="CP"><br><br>
+    <input type="text" id="redaman" placeholder="Redaman"><br><br>
+    <button onclick="addData()">Tambah</button>
+    <button onclick="closeModal()">Tutup</button>
 </div>
 
 <script>
-    let count = 1;
-
-    function searchOrder() {
-        let input = document.getElementById("search").value.toLowerCase();
-        let table = document.getElementById("orderTable");
-        let tr = table.getElementsByTagName("tr");
-
-        for (let i = 1; i < tr.length; i++) {
-            let td = tr[i].getElementsByTagName("td")[3]; // Kolom ND
-            if (td) {
-                let textValue = td.textContent || td.innerText;
-                if (textValue.toLowerCase().indexOf(input) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
+    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
 
     function openModal() {
         document.getElementById("dataModal").style.display = "block";
@@ -180,6 +110,31 @@
 
     function closeModal() {
         document.getElementById("dataModal").style.display = "none";
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+    }
+
+    function loadData() {
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+
+        dataTeknisi.forEach((item, index) => {
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+            `;
+        });
     }
 
     function addData() {
@@ -193,40 +148,23 @@
         let redaman = document.getElementById("redaman").value;
 
         if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
-            let table = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-            let newRow = table.insertRow();
-            
-            newRow.innerHTML = `
-                <td>${count++}</td>
-                <td>${nama}</td>
-                <td>${alamat}</td>
-                <td>${nd}</td>
-                <td>${odp}</td>
-                <td>${taggingan}</td>
-                <td>${odc}</td>
-                <td>${cp}</td>
-                <td>${redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
-            `;
-
+            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
+            saveToLocalStorage();
+            loadData();
             closeModal();
-            document.getElementById("nama").value = "";
-            document.getElementById("alamat").value = "";
-            document.getElementById("nd").value = "";
-            document.getElementById("odp").value = "";
-            document.getElementById("taggingan").value = "";
-            document.getElementById("odc").value = "";
-            document.getElementById("cp").value = "";
-            document.getElementById("redaman").value = "";
         } else {
             alert("Semua kolom harus diisi!");
         }
     }
 
-    function deleteRow(button) {
-        let row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+    function deleteRow(index) {
+        dataTeknisi.splice(index, 1);
+        saveToLocalStorage();
+        loadData();
     }
+
+    // Load data saat halaman pertama kali dibuka
+    loadData();
 </script>
 
 </body>
