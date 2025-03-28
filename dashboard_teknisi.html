@@ -67,6 +67,14 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        .btn-delete {
+            background: red;
+            color: white;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         /* Modal */
         .modal {
             display: none;
@@ -119,6 +127,7 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
+                <th>AKSI</th> <!-- Kolom baru untuk tombol delete -->
             </tr>
         </thead>
         <tbody>
@@ -197,6 +206,7 @@
                 <td>${odc}</td>
                 <td>${cp}</td>
                 <td>${redaman}</td>
+                <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
             `;
 
             closeModal();
@@ -211,6 +221,11 @@
         } else {
             alert("Semua kolom harus diisi!");
         }
+    }
+
+    function deleteRow(button) {
+        let row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
     }
 </script>
 
