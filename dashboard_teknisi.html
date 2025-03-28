@@ -74,19 +74,20 @@
     </style>
 </head>
 <body>
-
+<script>
+    // Cek apakah pengguna sudah login
+    if (!localStorage.getItem("isLoggedIn")) {
+        window.location.href = "login.html";
+    }
+</script>
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-
     <button class="btn-logout" onclick="logout()">Logout</button>
-
     <div class="search-bar">
         <input type="text" id="search" placeholder="Cari Internet atau Nama">
         <button onclick="searchOrder()">Search</button>
     </div>
-
     <button class="btn-add" onclick="openModal()">Tambah Data</button>
-
     <table id="orderTable">
         <thead>
             <tr>
@@ -105,121 +106,11 @@
         <tbody></tbody>
     </table>
 </div>
-
-<!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
-    <h3>Tambah Data Baru</h3>
-    <input type="text" id="nama" placeholder="Nama"><br><br>
-    <input type="text" id="alamat" placeholder="Alamat"><br><br>
-    <input type="text" id="nd" placeholder="ND"><br><br>
-    <input type="text" id="odp" placeholder="ODP"><br><br>
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
-    <input type="text" id="odc" placeholder="ODC"><br><br>
-    <input type="text" id="cp" placeholder="CP"><br><br>
-    <input type="text" id="redaman" placeholder="Redaman"><br><br>
-    <button onclick="addData()">Tambah</button>
-    <button onclick="closeModal()">Tutup</button>
-</div>
-
 <script>
-    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-
-    function openModal() {
-        document.getElementById("dataModal").style.display = "block";
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
-    function saveToLocalStorage() {
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-    }
-
-    function loadData() {
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
-
-        dataTeknisi.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.alamat}</td>
-                <td>${item.nd}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.cp}</td>
-                <td>${item.redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
-            `;
-        });
-    }
-
-    function addData() {
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-
-        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
-            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-            saveToLocalStorage();
-            loadData();
-            closeModal();
-        } else {
-            alert("Semua kolom harus diisi!");
-        }
-    }
-
-    function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        saveToLocalStorage();
-        loadData();
-    }
-
-    function searchOrder() {
-        let keyword = document.getElementById("search").value.toLowerCase();
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
-
-        let filteredData = dataTeknisi.filter(item =>
-            item.nama.toLowerCase().includes(keyword) ||
-            item.alamat.toLowerCase().includes(keyword) ||
-            item.odp.toLowerCase().includes(keyword) ||
-            item.taggingan.toLowerCase().includes(keyword)
-        );
-
-        filteredData.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.alamat}</td>
-                <td>${item.nd}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.cp}</td>
-                <td>${item.redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
-            `;
-        });
-    }
-
     function logout() {
-        localStorage.removeItem("dataTeknisi"); // Hapus data (opsional)
-        localStorage.removeItem("isLoggedIn"); // Tandai pengguna sebagai logout
-        window.location.href = "login.html"; // Redirect ke halaman login
+        localStorage.removeItem("isLoggedIn");
+        window.location.href = "login.html";
     }
-
-    loadData(); // Load data saat halaman dibuka
 </script>
-
 </body>
 </html>
