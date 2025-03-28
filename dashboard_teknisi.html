@@ -26,6 +26,25 @@
             text-align: center;
             border-radius: 5px;
         }
+        .search-bar {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .search-bar input {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            background: blue;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         .btn-add, .btn-logout {
             background: blue;
             color: white;
@@ -79,6 +98,12 @@
     <h2>Dashboard Teknisi</h2>
 
     <button class="btn-logout" onclick="logout()">Logout</button>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Cari ND atau Nama">
+        <button onclick="searchData()">Cari</button>
+    </div>
+
     <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
 
     <table id="orderTable">
@@ -196,21 +221,25 @@
         });
     }
 
-    function deleteRow(index) {
-        if (userRole !== "superadmin") {
-            alert("Anda tidak memiliki izin untuk menghapus data.");
-            return;
-        }
+    function searchData() {
+        let searchValue = document.getElementById("search").value.toLowerCase();
+        let filteredData = dataTeknisi.filter(data => 
+            data.nama.toLowerCase().includes(searchValue) || data.nd.toLowerCase().includes(searchValue)
+        );
         
-        dataTeknisi.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-
-        loadData();
+        document.getElementById("tableBody").innerHTML = filteredData.map((data, index) => `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${data.nama}</td>
+                <td>${data.nd}</td>
+                <td>${data.odp}</td>
+                <td>${data.odc}</td>
+            </tr>
+        `).join("");
     }
 
     function logout() {
-        localStorage.removeItem("username");
-        localStorage.removeItem("userRole");
+        localStorage.clear();
         window.location.href = "login.html";
     }
 </script>
