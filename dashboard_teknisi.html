@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard </title>
+    <title>Dashboard Teknisi</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -26,27 +26,13 @@
             text-align: center;
             border-radius: 5px;
         }
-        .search-bar {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        .search-bar input {
-            width: 80%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .search-bar button, .btn-add, .btn-logout {
-            background: blue;
+        .btn-logout {
+            background: darkred;
             color: white;
             padding: 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-        }
-        .btn-logout {
-            background: darkred;
             float: right;
         }
         table {
@@ -77,16 +63,8 @@
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-
     <button class="btn-logout" onclick="logout()">Logout</button>
-
-    <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Internet atau Nama">
-        <button onclick="searchOrder()">Search</button>
-    </div>
-
-    <button class="btn-add" onclick="openModal()">Tambah Data</button>
-
+    
     <table id="orderTable">
         <thead>
             <tr>
@@ -99,46 +77,20 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th>
+                <th id="actionColumn"></th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
 
-<!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
-    <h3>Tambah Data Baru</h3>
-    <input type="text" id="nama" placeholder="Nama"><br><br>
-    <input type="text" id="alamat" placeholder="Alamat"><br><br>
-    <input type="text" id="nd" placeholder="ND"><br><br>
-    <input type="text" id="odp" placeholder="ODP"><br><br>
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
-    <input type="text" id="odc" placeholder="ODC"><br><br>
-    <input type="text" id="cp" placeholder="CP"><br><br>
-    <input type="text" id="redaman" placeholder="Redaman"><br><br>
-    <button onclick="addData()">Tambah</button>
-    <button onclick="closeModal()">Tutup</button>
-</div>
-
 <script>
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-
-    function openModal() {
-        document.getElementById("dataModal").style.display = "block";
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
-    function saveToLocalStorage() {
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-    }
+    let role = localStorage.getItem("userRole");
 
     function loadData() {
         let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+        tableBody.innerHTML = "";
 
         dataTeknisi.forEach((item, index) => {
             let newRow = tableBody.insertRow();
@@ -152,73 +104,30 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+                ${role === "Team Leader" ? `<td><button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button></td>` : ""}
             `;
         });
-    }
 
-    function addData() {
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-
-        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
-            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-            saveToLocalStorage();
-            loadData();
-            closeModal();
-        } else {
-            alert("Semua kolom harus diisi!");
+        if (role !== "Team Leader") {
+            document.getElementById("actionColumn").style.display = "none";
         }
     }
 
     function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        saveToLocalStorage();
-        loadData();
-    }
-
-    function searchOrder() {
-        let keyword = document.getElementById("search").value.toLowerCase();
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
-
-        let filteredData = dataTeknisi.filter(item =>
-            item.nama.toLowerCase().includes(keyword) ||
-            item.alamat.toLowerCase().includes(keyword) ||
-            item.odp.toLowerCase().includes(keyword) ||
-            item.taggingan.toLowerCase().includes(keyword)
-        );
-
-        filteredData.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.alamat}</td>
-                <td>${item.nd}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.cp}</td>
-                <td>${item.redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
-            `;
-        });
+        if (role === "Team Leader") {
+            dataTeknisi.splice(index, 1);
+            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            loadData();
+        }
     }
 
     function logout() {
-        localStorage.removeItem("dataTeknisi"); // Hapus data (opsional)
-        localStorage.removeItem("isLoggedIn"); // Tandai pengguna sebagai logout
-        window.location.href = "login.html"; // Redirect ke halaman login
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("dataTeknisi");
+        window.location.href = "login.html";
     }
 
-    loadData(); // Load data saat halaman dibuka
+    loadData();
 </script>
 
 </body>
