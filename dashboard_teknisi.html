@@ -106,7 +106,6 @@
     </table>
 </div>
 
-<!-- Modal Form -->
 <div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
@@ -147,7 +146,6 @@
             tableBody.innerHTML += row;
         });
 
-        // Tampilkan tombol "Tambah Data" hanya untuk user 24960059
         document.getElementById("btn-add").style.display = (currentUser === "24960059") ? "block" : "none";
     }
 
@@ -185,21 +183,6 @@
         closeModal();
         loadData();
     }
-
-    function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        loadData();
-    }
-
-    function logout() {
-        localStorage.clear();
-        window.location.href = "index.html";
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        loadData();
-    });
 </script>
 
 </body>
