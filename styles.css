@@ -1,64 +1,79 @@
-/* Styling Login */
+/* Background Gradient */
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
     background: linear-gradient(90deg, #7b5cff, #e14eca);
-    color: white;
-    padding: 50px;
+    margin: 0;
 }
 
-.login-container {
+/* Container utama */
+.container {
+    display: flex;
     background: white;
-    color: black;
-    padding: 20px;
     border-radius: 10px;
-    display: inline-block;
+    overflow: hidden;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-input, button {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    width: 80%;
+/* Bagian quote */
+.quote-section {
+    background: #1a1a2e;
+    color: white;
+    padding: 40px;
+    width: 300px;
+    text-align: center;
+}
+
+.quote-section h2 {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.quote-section p {
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Bagian form login */
+.login-section {
+    padding: 40px;
+    width: 300px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 button {
+    width: 100%;
+    padding: 10px;
     background: #7b5cff;
-    color: white;
     border: none;
+    color: white;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 button:hover {
     background: #5936ff;
 }
 
-/* Styling Dashboard */
-.dashboard-container {
-    background: white;
-    color: black;
-    padding: 20px;
-    border-radius: 10px;
-    width: 60%;
-    margin: auto;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-table {
-    width: 100%;
+#message {
+    color: red;
+    text-align: center;
     margin-top: 10px;
-    border-collapse: collapse;
-}
-
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-}
-
-th {
-    background: #7b5cff;
-    color: white;
 }
