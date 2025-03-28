@@ -26,18 +26,7 @@
             text-align: center;
             border-radius: 5px;
         }
-        .search-bar {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-        .search-bar input {
-            width: 80%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .search-bar button, .btn-add, .btn-logout {
+        .btn-add, .btn-logout {
             background: blue;
             color: white;
             padding: 8px;
@@ -84,18 +73,12 @@
         }
     </style>
 </head>
-<body onload="checkUserRole()">
+<body onload="loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
 
     <button class="btn-logout" onclick="logout()">Logout</button>
-
-    <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Internet atau Nama">
-        <button onclick="searchOrder()">Search</button>
-    </div>
-
     <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
 
     <table id="orderTable">
@@ -136,16 +119,7 @@
 <script>
     let username = localStorage.getItem("username");
     let userRole = localStorage.getItem("userRole");
-
-    console.log("User Role:", userRole); // Debugging
-    console.log("Username:", username); // Debugging
-
-    function checkUserRole() {
-        if (userRole !== "superadmin") {
-            document.getElementById("btn-add").style.display = "none";
-            document.querySelectorAll(".btn-delete").forEach(btn => btn.style.display = "none");
-        }
-    }
+    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
 
     function openModal() {
         if (userRole === "superadmin") {
@@ -179,33 +153,59 @@
             return;
         }
 
-        let tableBody = document.getElementById("tableBody");
-        let newRow = tableBody.insertRow();
+        let newData = {
+            nama,
+            alamat,
+            nd,
+            odp,
+            taggingan,
+            odc,
+            cp,
+            redaman,
+            addedBy: username
+        };
 
-        newRow.innerHTML = `
-            <td>${tableBody.rows.length}</td>
-            <td>${nama}</td>
-            <td>${alamat}</td>
-            <td>${nd}</td>
-            <td>${odp}</td>
-            <td>${taggingan}</td>
-            <td>${odc}</td>
-            <td>${cp}</td>
-            <td>${redaman}</td>
-            <td>${username}</td>
-            <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
-        `;
+        dataTeknisi.push(newData);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
 
         closeModal();
+        loadData();
     }
 
-    function deleteRow(button) {
+    function loadData() {
+        let tableBody = document.getElementById("tableBody");
+        tableBody.innerHTML = "";
+
+        dataTeknisi.forEach((data, index) => {
+            let row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${data.nama}</td>
+                    <td>${data.alamat}</td>
+                    <td>${data.nd}</td>
+                    <td>${data.odp}</td>
+                    <td>${data.taggingan}</td>
+                    <td>${data.odc}</td>
+                    <td>${data.cp}</td>
+                    <td>${data.redaman}</td>
+                    <td>${data.addedBy}</td>
+                    <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function deleteRow(index) {
         if (userRole !== "superadmin") {
             alert("Anda tidak memiliki izin untuk menghapus data.");
             return;
         }
-        let row = button.parentNode.parentNode;
-        row.parentNode.removeChild(row);
+        
+        dataTeknisi.splice(index, 1);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+
+        loadData();
     }
 
     function logout() {
