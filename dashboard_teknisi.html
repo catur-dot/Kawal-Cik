@@ -85,6 +85,7 @@
         <button onclick="searchOrder()">Search</button>
     </div>
 
+    <!-- Hanya user "24960059" yang bisa melihat tombol ini -->
     <button class="btn-add" onclick="openModal()" id="btn-add" style="display: none;">Tambah Data</button>
 
     <table id="orderTable">
@@ -106,7 +107,7 @@
     </table>
 </div>
 
-<!-- Modal Form -->
+<!-- Modal Form (Hanya untuk User "24960059") -->
 <div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
@@ -141,7 +142,7 @@
                     <td>${item.odc}</td>
                     <td>${item.cp}</td>
                     <td>${item.redaman}</td>
-                    <td>${currentUser === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+                    <td>${currentUser === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : "View Only"}</td>
                 </tr>
             `;
             tableBody.innerHTML += row;
@@ -156,7 +157,7 @@
         if (currentUser === "24960059") {
             document.getElementById("dataModal").style.display = "block";
         } else {
-            alert("Anda tidak memiliki akses untuk menambah data.");
+            alert("Anda hanya memiliki akses untuk melihat data.");
         }
     }
 
@@ -165,6 +166,11 @@
     }
 
     function addData() {
+        if (currentUser !== "24960059") {
+            alert("Anda tidak memiliki izin untuk menambah data.");
+            return;
+        }
+
         let newData = {
             nama: document.getElementById("nama").value,
             alamat: document.getElementById("alamat").value,
@@ -184,6 +190,11 @@
     }
 
     function deleteRow(index) {
+        if (currentUser !== "24960059") {
+            alert("Anda tidak memiliki izin untuk menghapus data.");
+            return;
+        }
+
         dataTeknisi.splice(index, 1);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
         loadData();
@@ -196,8 +207,8 @@
 
     window.onload = function() {
         if (!currentUser) {
-            localStorage.setItem("username", "24960059");
-            currentUser = "24960059";
+            localStorage.setItem("username", "userBiasa"); // Default user
+            currentUser = "userBiasa";
         }
         loadData();
     };
