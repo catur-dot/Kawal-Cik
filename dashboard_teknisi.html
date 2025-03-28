@@ -37,15 +37,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .search-bar button {
-            background: blue;
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn-add, .btn-logout {
+        .search-bar button, .btn-add, .btn-logout {
             background: blue;
             color: white;
             padding: 8px;
@@ -79,32 +71,20 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #dataModal {
-            display: none;
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, 0);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        }
     </style>
 </head>
 <body onload="loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-
     <button class="btn-logout" onclick="logout()">Logout</button>
-
+    
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari ND atau Nama">
-        <button onclick="searchData()">Cari</button>
+        <input type="text" id="search" placeholder="Cari Nama atau ODP">
+        <button onclick="searchOrder()">Search</button>
     </div>
-
-    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+    
+    <button class="btn-add" id="btn-add" onclick="openModal()">Tambah Data</button>
 
     <table id="orderTable">
         <thead>
@@ -118,16 +98,15 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th>DITAMBAHKAN OLEH</th>
-                <th>Aksi</th>
+                <th></th>
             </tr>
         </thead>
-        <tbody id="tableBody"></tbody>
+        <tbody></tbody>
     </table>
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal">
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
     <input type="text" id="alamat" placeholder="Alamat"><br><br>
@@ -142,15 +121,34 @@
 </div>
 
 <script>
-    let username = localStorage.getItem("username");
-    let userRole = localStorage.getItem("userRole");
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+    let username = localStorage.getItem("username");
+    let isSuperAdmin = username === "24960059";
+
+    function loadData() {
+        let tableBody = document.querySelector("#orderTable tbody");
+        tableBody.innerHTML = "";
+        dataTeknisi.forEach((item, index) => {
+            let row = `<tr>
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td>${isSuperAdmin ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+        document.getElementById("btn-add").style.display = isSuperAdmin ? "block" : "none";
+    }
 
     function openModal() {
-        if (userRole === "superadmin") {
+        if (isSuperAdmin) {
             document.getElementById("dataModal").style.display = "block";
-        } else {
-            alert("Anda tidak memiliki izin untuk menambah data");
         }
     }
 
@@ -159,90 +157,32 @@
     }
 
     function addData() {
-        if (userRole !== "superadmin") {
-            alert("Anda tidak memiliki izin untuk menambahkan data.");
-            return;
-        }
-
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-
-        if (!nama || !alamat || !nd || !odp || !taggingan || !odc || !cp || !redaman) {
-            alert("Semua kolom harus diisi!");
-            return;
-        }
-
         let newData = {
-            nama,
-            alamat,
-            nd,
-            odp,
-            taggingan,
-            odc,
-            cp,
-            redaman,
-            addedBy: username
+            nama: document.getElementById("nama").value,
+            alamat: document.getElementById("alamat").value,
+            nd: document.getElementById("nd").value,
+            odp: document.getElementById("odp").value,
+            taggingan: document.getElementById("taggingan").value,
+            odc: document.getElementById("odc").value,
+            cp: document.getElementById("cp").value,
+            redaman: document.getElementById("redaman").value
         };
-
         dataTeknisi.push(newData);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-
         closeModal();
         loadData();
     }
 
-    function loadData() {
-        let tableBody = document.getElementById("tableBody");
-        tableBody.innerHTML = "";
-
-        dataTeknisi.forEach((data, index) => {
-            let row = `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${data.nama}</td>
-                    <td>${data.alamat}</td>
-                    <td>${data.nd}</td>
-                    <td>${data.odp}</td>
-                    <td>${data.taggingan}</td>
-                    <td>${data.odc}</td>
-                    <td>${data.cp}</td>
-                    <td>${data.redaman}</td>
-                    <td>${data.addedBy}</td>
-                    <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-    }
-
-    function searchData() {
-        let searchValue = document.getElementById("search").value.toLowerCase();
-        let filteredData = dataTeknisi.filter(data => 
-            data.nama.toLowerCase().includes(searchValue) || data.nd.toLowerCase().includes(searchValue)
-        );
-        
-        document.getElementById("tableBody").innerHTML = filteredData.map((data, index) => `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${data.nama}</td>
-                <td>${data.nd}</td>
-                <td>${data.odp}</td>
-                <td>${data.odc}</td>
-            </tr>
-        `).join("");
+    function deleteRow(index) {
+        dataTeknisi.splice(index, 1);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        loadData();
     }
 
     function logout() {
-        localStorage.clear();
+        localStorage.removeItem("username");
         window.location.href = "login.html";
     }
 </script>
-
 </body>
 </html>
