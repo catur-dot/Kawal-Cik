@@ -125,12 +125,14 @@
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
     let currentUser = localStorage.getItem("username");
 
+    console.log("User login:", currentUser); // Debugging
+
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
 
         dataTeknisi.forEach((item, index) => {
-            let row = `
+            let row = 
                 <tr>
                     <td>${index + 1}</td>
                     <td>${item.nama}</td>
@@ -141,9 +143,9 @@
                     <td>${item.odc}</td>
                     <td>${item.cp}</td>
                     <td>${item.redaman}</td>
-                    <td>${currentUser === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+                    <td>${currentUser === "24960059" ? <button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button> : ""}</td>
                 </tr>
-            `;
+            ;
             tableBody.innerHTML += row;
         });
 
@@ -190,7 +192,7 @@
     }
 
     function logout() {
-        localStorage.removeItem("username"); // ✅ Hanya hapus username, data tetap aman
+        localStorage.clear();
         window.location.href = "index.html";
     }
 
