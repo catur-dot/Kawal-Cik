@@ -42,10 +42,6 @@
             border: none;
             cursor: pointer;
         }
-        .contact-info {
-            margin-top: 10px;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
@@ -54,21 +50,24 @@
         <input type="text" placeholder="Username" id="username">
         <input type="password" placeholder="Password" id="password">
         <button onclick="login()">Log in</button>
-        <div class="contact-info">
-            Telegram Contact: <strong>@basjuniarto</strong>
-        </div>
     </div>
 
     <script>
         function login() {
             let username = document.getElementById("username").value;
             let password = document.getElementById("password").value;
-            
-            let allowedUsers = ["18810029", "17830672", "24960059"];
-            
-            if (allowedUsers.includes(username) && password === "telkom135") {
+
+            // Daftar pengguna
+            let users = {
+                "24960059": { password: "telkom135", role: "superadmin" },
+                "18810029": { password: "telkom135", role: "viewer" },
+                "17830672": { password: "telkom135", role: "viewer" }
+            };
+
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem("userRole", users[username].role);
                 alert("Login berhasil");
-                window.location.href = "dashboard.html"; // Redirect ke halaman dashboard utama
+                window.location.href = "dashboard_teknisi.html";
             } else {
                 alert("Username atau password salah");
             }
