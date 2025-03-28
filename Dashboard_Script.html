@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Valins ID">
+            <button onclick="search()">Search</button>
+            <button onclick="resetSearch()">Reset Search</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>COMPLETE</th>
+                    <th>ORDERID</th>
+                    <th>SOURCE</th>
+                    <th>ORDER STATE</th>
+                    <th>TYPE</th>
+                    <th>PROSES</th>
+                    <th>REF</th>
+                    <th>TASK</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>6 PM</td>
+                    <td>49633243</td>
+                    <td>SOM_ProvisionServiceOrderFulfillment</td>
+                    <td>In Progress</td>
+                    <td>SOM_ProvisionServiceOrderFulfillment</td>
+                    <td>SOM_FalloutProcess</td>
+                    <td>SM8DFLZN6BBF70...</td>
+                    <td>UpdateDesignTask</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
