@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard </title>
+    <title>Dashboard Teknisi</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,10 +73,11 @@
         }
     </style>
 </head>
-<body onload="checkUserRole()">
+<body onload="loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
+
     <button class="btn-logout" onclick="logout()">Logout</button>
 
     <div class="search-bar">
@@ -122,52 +123,17 @@
 
 <script>
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-    let userRole = localStorage.getItem("userRole");
 
-    function checkUserRole() {
-        if (userRole !== "superadmin") {
-            document.getElementById("btn-add").style.display = "none";
-        }
-        loadData();
-    }
-
-    function openModal() {
-        if (userRole === "superadmin") {
-            document.getElementById("dataModal").style.display = "block";
-        } else {
-            alert("Anda tidak memiliki izin untuk menambah data");
-        }
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
-    function addData() {
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-
-        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
-            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-            loadData();
-            closeModal();
-        } else {
-            alert("Semua kolom harus diisi!");
-        }
+    function saveToLocalStorage() {
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
     }
 
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
         dataTeknisi.forEach((item, index) => {
-            let row = `<tr>
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${item.nama}</td>
                 <td>${item.alamat}</td>
@@ -177,17 +143,31 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
-                ${userRole === "superadmin" ? `<td><button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button></td>` : ""}
-            </tr>`;
-            tableBody.innerHTML += row;
+                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+            `;
         });
     }
 
+    function searchOrder() {
+        let keyword = document.getElementById("search").value.toLowerCase();
+        let filteredData = dataTeknisi.filter(item =>
+            item.nama.toLowerCase().includes(keyword) ||
+            item.alamat.toLowerCase().includes(keyword) ||
+            item.nd.toLowerCase().includes(keyword) ||
+            item.odp.toLowerCase().includes(keyword) ||
+            item.taggingan.toLowerCase().includes(keyword)
+        );
+        dataTeknisi = filteredData;
+        loadData();
+    }
+
     function logout() {
+        localStorage.removeItem("dataTeknisi");
         window.location.href = "login.html";
     }
 
     loadData();
 </script>
+
 </body>
 </html>
