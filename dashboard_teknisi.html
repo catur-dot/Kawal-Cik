@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard </title>
+    <title>Dashboard Teknisi</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -71,6 +71,17 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        #dataModal {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body onload="checkUserRole()">
@@ -99,15 +110,15 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th>
+                <th>Aksi</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody id="tableBody"></tbody>
     </table>
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+<div id="dataModal">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
     <input type="text" id="alamat" placeholder="Alamat"><br><br>
@@ -124,8 +135,10 @@
 <script>
     let userRole = localStorage.getItem("userRole");
 
+    console.log("User Role:", userRole); // Debugging untuk memastikan role terbaca
+
     function checkUserRole() {
-        if (userRole === "viewer") {
+        if (userRole !== "superadmin") {
             document.getElementById("btn-add").style.display = "none";
             document.querySelectorAll(".btn-delete").forEach(btn => btn.style.display = "none");
         }
@@ -139,14 +152,56 @@
         }
     }
 
-    function deleteRow(index) {
-        if (userRole === "superadmin") {
-            dataTeknisi.splice(index, 1);
-            saveToLocalStorage();
-            loadData();
-        } else {
-            alert("Anda tidak memiliki izin untuk menghapus data");
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
+    function addData() {
+        if (userRole !== "superadmin") {
+            alert("Anda tidak memiliki izin untuk menambahkan data.");
+            return;
         }
+
+        let nama = document.getElementById("nama").value;
+        let alamat = document.getElementById("alamat").value;
+        let nd = document.getElementById("nd").value;
+        let odp = document.getElementById("odp").value;
+        let taggingan = document.getElementById("taggingan").value;
+        let odc = document.getElementById("odc").value;
+        let cp = document.getElementById("cp").value;
+        let redaman = document.getElementById("redaman").value;
+
+        if (!nama || !alamat || !nd || !odp || !taggingan || !odc || !cp || !redaman) {
+            alert("Semua kolom harus diisi!");
+            return;
+        }
+
+        let tableBody = document.getElementById("tableBody");
+        let newRow = tableBody.insertRow();
+
+        newRow.innerHTML = `
+            <td>${tableBody.rows.length}</td>
+            <td>${nama}</td>
+            <td>${alamat}</td>
+            <td>${nd}</td>
+            <td>${odp}</td>
+            <td>${taggingan}</td>
+            <td>${odc}</td>
+            <td>${cp}</td>
+            <td>${redaman}</td>
+            <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
+        `;
+
+        closeModal();
+    }
+
+    function deleteRow(button) {
+        if (userRole !== "superadmin") {
+            alert("Anda tidak memiliki izin untuk menghapus data.");
+            return;
+        }
+        let row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
     }
 
     function logout() {
