@@ -73,15 +73,14 @@
         }
     </style>
 </head>
-<body onload="checkUserRole()">
+<body onload="checkUserRole(); loadData();">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-
     <button class="btn-logout" onclick="logout()">Logout</button>
-
+    
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari data" onkeyup="searchOrder()">
+        <input type="text" id="search" placeholder="Cari Nama atau ODP">
         <button onclick="searchOrder()">Search</button>
     </div>
 
@@ -99,7 +98,7 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -130,7 +129,6 @@
             document.getElementById("btn-add").style.display = "none";
             document.querySelectorAll(".btn-delete").forEach(btn => btn.style.display = "none");
         }
-        loadData();
     }
 
     function openModal() {
@@ -141,42 +139,44 @@
         }
     }
 
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
     function addData() {
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-
-        if (nama && alamat && nd) {
-            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-            loadData();
-            closeModal();
-        } else {
-            alert("Semua kolom harus diisi!");
-        }
+        let newData = {
+            nama: document.getElementById("nama").value,
+            alamat: document.getElementById("alamat").value,
+            nd: document.getElementById("nd").value,
+            odp: document.getElementById("odp").value,
+            taggingan: document.getElementById("taggingan").value,
+            odc: document.getElementById("odc").value,
+            cp: document.getElementById("cp").value,
+            redaman: document.getElementById("redaman").value
+        };
+        dataTeknisi.push(newData);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        loadData();
+        closeModal();
     }
 
-    function searchOrder() {
-        let keyword = document.getElementById("search").value.toLowerCase();
-        let filteredData = dataTeknisi.filter(item => 
-            item.nama.toLowerCase().includes(keyword) ||
-            item.alamat.toLowerCase().includes(keyword) ||
-            item.nd.toLowerCase().includes(keyword)
-        );
-        loadData(filteredData);
-    }
-
-    function loadData(data = dataTeknisi) {
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+    function loadData() {
+        let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
-        data.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `<td>${index + 1}</td><td>${item.nama}</td><td>${item.alamat}</td>`;
+        dataTeknisi.forEach((item, index) => {
+            let row = `<tr>
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+            </tr>`;
+            tableBody.innerHTML += row;
         });
     }
 
