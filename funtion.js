@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     const loginForm = document.getElementById("loginForm");
-    const loginButton = document.getElementById("loginButton");
-    const logoutButton = document.getElementById("logoutButton");
 
-    // Jika ada login form, maka jalankan validasi login
     if (loginForm) {
         generateCaptcha();
 
@@ -18,7 +15,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let captchaText = document.getElementById("captchaText").innerText;
 
-            // Validasi Captcha
             if (captchaInput !== captchaText) {
                 message.style.color = "red";
                 message.textContent = "Captcha salah!";
@@ -31,7 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 "admin": { password: "telkom135", role: "teknisi" }
             };
 
-            // Validasi Login
             if (users[username] && users[username].password === password) {
                 localStorage.setItem("isLoggedIn", "true");
                 localStorage.setItem("userRole", users[username].role);
@@ -50,20 +45,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Cek Role & Redirect yang Tidak Sesuai
-    let userRole = localStorage.getItem("userRole");
-
-    if (window.location.pathname.includes("dashboard_teknisi.html") && userRole !== "teknisi") {
-        window.location.href = "index.html";
+    // Halaman Teknisi (Hanya Bisa View)
+    if (window.location.pathname.includes("dashboard_teknisi.html")) {
+        if (localStorage.getItem("userRole") !== "teknisi") {
+            window.location.href = "index.html";
+        }
+        document.getElementById("adminActions").style.display = "none"; // Sembunyikan aksi admin
     }
 
-    if (window.location.pathname.includes("dashboard_teamleader.html") && userRole !== "teamleader") {
-        window.location.href = "index.html";
+    // Halaman Team Leader
+    if (window.location.pathname.includes("dashboard_teamleader.html")) {
+        if (localStorage.getItem("userRole") !== "teamleader") {
+            window.location.href = "index.html";
+        }
     }
 
     // Logout Function
-    if (logoutButton) {
-        logoutButton.addEventListener("click", function () {
+    if (document.getElementById("logoutButton")) {
+        document.getElementById("logoutButton").addEventListener("click", function () {
             localStorage.removeItem("isLoggedIn");
             localStorage.removeItem("userRole");
             window.location.href = "index.html";
@@ -71,8 +70,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Fungsi Generate Captcha
+// Captcha Generator
 function generateCaptcha() {
-    let captchaText = Math.random().toString(36).substring(2, 8).toUpperCase();
-    document.getElementById("captchaText").innerText = captchaText;
+    let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let captcha = "";
+    for (let i = 0; i < 5; i++) {
+        captcha += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById("captchaText").innerText = captcha;
 }
