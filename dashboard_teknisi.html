@@ -5,37 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Teknisi</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: darkred; color: white; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            background: darkred;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: darkred;
+            color: white;
+        }
+        .search-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .search-bar input {
+            padding: 8px;
+            width: 200px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .search-bar button {
+            padding: 8px;
+            background: darkred;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
+<div class="container">
     <h2>Dashboard Teknisi</h2>
-    <table>
-        <tr>
-            <th>START</th>
-            <th>COMPLETE</th>
-            <th>ORDERID</th>
-            <th>SOURCE</th>
-            <th>ORDER STATE</th>
-            <th>TYPE</th>
-            <th>PROSES</th>
-            <th>REF</th>
-            <th>TASK</th>
-        </tr>
-        <tr>
-            <td>03/23/2025 04:54:16 PM</td>
-            <td>-</td>
-            <td>49633243</td>
-            <td>SOM_ProvisionServiceOrderFulfillment</td>
-            <td>In Progress</td>
-            <td>SOM_ProvisionServiceOrderFulfillment</td>
-            <td>SOM_FalloutProcess</td>
-            <td>SMBDFLZN6BBF70MSAOEY99PFTA...</td>
-            <td>UpdateDesignTask</td>
-        </tr>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Cari Order ID">
+        <button onclick="searchOrder()">Search</button>
+    </div>
+
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>START</th>
+                <th>COMPLETE</th>
+                <th>ORDERID</th>
+                <th>SOURCE</th>
+                <th>ORDER STATE</th>
+                <th>TYPE</th>
+                <th>PROSES</th>
+                <th>REF</th>
+                <th>TASK</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>03/23/2025 04:54:16 PM</td>
+                <td>-</td>
+                <td>49633243</td>
+                <td>SOM_ProvisionServiceOrderFulfillment</td>
+                <td>In Progress</td>
+                <td>SOM_ProvisionServiceOrderFulfillment</td>
+                <td>SOM_FalloutProcess</td>
+                <td>SMBDFLZN6BBF70MSAQEY9PFTA...</td>
+                <td>UpdateDesignTask</td>
+            </tr>
+            <!-- Tambahkan lebih banyak data jika diperlukan -->
+        </tbody>
     </table>
+</div>
+
+<script>
+    function searchOrder() {
+        let input = document.getElementById("search").value.toLowerCase();
+        let table = document.getElementById("orderTable");
+        let tr = table.getElementsByTagName("tr");
+
+        for (let i = 1; i < tr.length; i++) {
+            let td = tr[i].getElementsByTagName("td")[2]; // Kolom ORDERID
+            if (td) {
+                let textValue = td.textContent || td.innerText;
+                if (textValue.toLowerCase().indexOf(input) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+
 </body>
 </html>
