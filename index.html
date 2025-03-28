@@ -3,34 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login </title>
+    <title>Dashboard </title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h2>DASHBOARD INDIHOME</h2>
-        <form id="loginForm">
-            <input type="text" id="username" placeholder="Username" required>
-            <input type="password" id="password" placeholder="Password" required>
-            
+    <div class="login-container">
+        <div class="login-box">
+            <h2>DASHBOARD INDIIHOME</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
             <select id="role">
-                <option value="teknisi">Teknisi</option>
-                <option value="teamleader">Team Leader</option>
+                <option value="Teknisi">Teknisi</option>
+                <option value="Team Leader">Team Leader</option>
             </select>
-
-            <div class="captcha-container">
-                <span id="captchaText"></span>
-                <button type="button" onclick="generateCaptcha()">🔄</button>
-            </div>
-            <input type="text" id="captchaInput" placeholder="Input Captcha" required>
-
-            <button type="submit">Log in</button>
-        </form>
-        <p id="message"></p>
-
-        <p class="contact">Telegram Contact: @basjuniarto</p>
+            <button onclick="login()">Log in</button>
+            <p class="contact">Telegram Contact: @basjuniarto</p>
+        </div>
     </div>
-
-    <script src="script.js"></script>
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+            
+            if ((username === "24960059" && password === "telkom135" && role === "Team Leader") ||
+                (username === "admin" && password === "telkom135" && role === "Teknisi")) {
+                alert("Login Berhasil!");
+                // Redirect ke dashboard yang sesuai
+                window.location.href = "dashboard.html";
+            } else {
+                alert("Username atau Password salah!");
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #4a5d6e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            text-align: center;
+        }
+        .login-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        h2 {
+            background-color: darkred;
+            color: white;
+            padding: 10px;
+            margin: -20px -20px 20px -20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        input, select, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: darkred;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact {
+            margin-top: 10px;
+            color: darkred;
+        }
+    </style>
 </body>
 </html>
