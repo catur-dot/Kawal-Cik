@@ -1,3 +1,4 @@
+<!-- login.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -42,10 +43,6 @@
             border: none;
             cursor: pointer;
         }
-        .contact-info {
-            margin-top: 10px;
-            font-size: 14px;
-        }
     </style>
 </head>
 <body>
@@ -58,9 +55,6 @@
             <option value="Team Leader">Team Leader</option>
         </select>
         <button onclick="login()">Log in</button>
-        <div class="contact-info">
-            Telegram Contact: <strong>@basjuniarto</strong>
-        </div>
     </div>
 
     <script>
@@ -70,15 +64,43 @@
             let role = document.getElementById("role").value;
 
             if (username === "24960059" && password === "telkom135" && role === "Team Leader") {
-                alert("Login berhasil sebagai Team Leader");
-                window.location.href = "dashboard_teamleader.html"; // Redirect ke halaman Team Leader
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("role", "Team Leader");
+                window.location.href = "dashboard_teamleader.html";
             } else if (username === "admin" && password === "telkom135" && role === "Teknisi") {
-                alert("Login berhasil sebagai Teknisi");
-                window.location.href = "dashboard_teknisi.html"; // Redirect ke halaman Teknisi
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("role", "Teknisi");
+                window.location.href = "dashboard_teknisi.html";
             } else {
                 alert("Username atau password salah");
             }
         }
     </script>
+</body>
+</html>
+
+<!-- dashboard_teknisi.html -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Teknisi</title>
+    <script>
+        window.onload = function() {
+            if (localStorage.getItem("isLoggedIn") !== "true" || localStorage.getItem("role") !== "Teknisi") {
+                window.location.href = "login.html";
+            }
+        };
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("role");
+            window.location.href = "login.html";
+        }
+    </script>
+</head>
+<body>
+    <h2>Dashboard Teknisi</h2>
+    <button onclick="logout()">Logout</button>
 </body>
 </html>
