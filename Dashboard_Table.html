@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+        }
+        .login-container h2 {
+            background: darkred;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .login-container input, .login-container select, .login-container button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .login-container button {
+            background: darkred;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .dashboard {
+            display: none;
+            width: 90%;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="loginForm">
+        <h2>DASHBOARD INDIHOME</h2>
+        <input type="text" placeholder="Username" id="username">
+        <input type="password" placeholder="Password" id="password">
+        <select id="role">
+            <option value="Teknisi">Teknisi</option>
+            <option value="Team Leader">Team Leader</option>
+        </select>
+        <button onclick="login()">Log in</button>
+    </div>
+    
+    <div class="dashboard" id="dashboard">
+        <h2>Dashboard Data</h2>
+        <table>
+            <tr>
+                <th>START</th>
+                <th>COMPLETE</th>
+                <th>ORDER ID</th>
+                <th>SOURCE</th>
+                <th>ORDER STATE</th>
+                <th>TYPE</th>
+                <th>PROSES</th>
+                <th>REF</th>
+                <th>TASK</th>
+            </tr>
+            <tr>
+                <td>03/23/2025 04:54:16 PM</td>
+                <td></td>
+                <td>49633243</td>
+                <td>SOM_ProvisionServiceOrderFulfillment</td>
+                <td>In Progress</td>
+                <td>SOM_ProvisionServiceOrderFulfillment</td>
+                <td>SOM_FalloutProcess</td>
+                <td>SMBDFLZN6BBF70MSAQEY99PFTA...</td>
+                <td>UpdateDesignTask</td>
+            </tr>
+        </table>
+    </div>
+    
+    <script>
+        function login() {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let role = document.getElementById("role").value;
+            
+            if ((username === "24960059" && password === "telkom135" && role === "Team Leader") ||
+                (username === "admin" && password === "telkom135" && role === "Teknisi")) {
+                document.getElementById("loginForm").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+            } else {
+                alert("Username atau password salah");
+            }
+        }
+    </script>
+</body>
+</html>
