@@ -26,6 +26,25 @@
             text-align: center;
             border-radius: 5px;
         }
+        .search-bar {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .search-bar input {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            background: blue;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -62,6 +81,11 @@
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Cari Internet atau Nama">
+        <button onclick="searchOrder()">Search</button>
+    </div>
 
     <button class="btn-add" onclick="openModal()">Tambah Data</button>
 
@@ -161,6 +185,35 @@
         dataTeknisi.splice(index, 1);
         saveToLocalStorage();
         loadData();
+    }
+
+    function searchOrder() {
+        let keyword = document.getElementById("search").value.toLowerCase();
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+
+        let filteredData = dataTeknisi.filter(item =>
+            item.nama.toLowerCase().includes(keyword) ||
+            item.alamat.toLowerCase().includes(keyword) ||
+            item.odp.toLowerCase().includes(keyword) ||
+            item.taggingan.toLowerCase().includes(keyword)
+        );
+
+        filteredData.forEach((item, index) => {
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
+            `;
+        });
     }
 
     // Load data saat halaman pertama kali dibuka
