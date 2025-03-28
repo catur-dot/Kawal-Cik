@@ -37,18 +37,16 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .search-bar button, .btn-add, .btn-logout {
-            background: blue;
-            color: white;
+        .btn {
             padding: 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            color: white;
         }
-        .btn-logout {
-            background: darkred;
-            float: right;
-        }
+        .btn-logout { background: darkred; float: right; }
+        .btn-add { background: blue; }
+        .btn-delete { background: red; }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -59,34 +57,18 @@
             padding: 8px;
             text-align: left;
         }
-        th {
-            background-color: darkred;
-            color: white;
-        }
-        .btn-delete {
-            background: red;
-            color: white;
-            padding: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+        th { background-color: darkred; color: white; }
     </style>
 </head>
-<body onload="checkUserRole()">
+<body onload="loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-
-    <button class="btn-logout" onclick="logout()">Logout</button>
-
+    <button class="btn btn-logout" onclick="logout()">Logout</button>
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Internet atau Nama">
-        <button onclick="searchOrder()">Search</button>
+        <input type="text" id="search" placeholder="Cari Internet atau Nama" onkeyup="searchData()">
     </div>
-
-    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
-
+    <button class="btn btn-add" id="btn-add" onclick="openModal()">Tambah Data</button>
     <table id="orderTable">
         <thead>
             <tr>
@@ -107,7 +89,7 @@
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+<div id="dataModal" style="display:none;position:fixed;top:20%;left:50%;transform:translate(-50%,0);background:white;padding:20px;border-radius:10px;">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
     <input type="text" id="alamat" placeholder="Alamat"><br><br>
@@ -122,34 +104,11 @@
 </div>
 
 <script>
-    let userRole = localStorage.getItem("userRole");
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-
-    function checkUserRole() {
-        if (userRole !== "superadmin") {
-            document.getElementById("btn-add").style.display = "none";
-        }
-        loadData();
-    }
-
-    function openModal() {
-        if (userRole === "superadmin") {
-            document.getElementById("dataModal").style.display = "block";
-        } else {
-            alert("Anda tidak memiliki izin untuk menambah data");
-        }
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
-    function saveToLocalStorage() {
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-    }
+    let currentUser = localStorage.getItem("username");
 
     function loadData() {
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
         dataTeknisi.forEach((item, index) => {
             let row = `<tr>
@@ -162,31 +121,57 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
+                <td>${currentUser === "24960059" ? `<button class='btn btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
             </tr>`;
             tableBody.innerHTML += row;
         });
+        document.getElementById("btn-add").style.display = currentUser === "24960059" ? "inline-block" : "none";
     }
 
     function addData() {
-        let nama = document.getElementById("nama").value;
-        let alamat = document.getElementById("alamat").value;
-        let nd = document.getElementById("nd").value;
-        let odp = document.getElementById("odp").value;
-        let taggingan = document.getElementById("taggingan").value;
-        let odc = document.getElementById("odc").value;
-        let cp = document.getElementById("cp").value;
-        let redaman = document.getElementById("redaman").value;
-        
-        dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-        saveToLocalStorage();
+        if (currentUser !== "24960059") {
+            alert("Anda tidak memiliki izin untuk menambah data");
+            return;
+        }
+        let newData = {
+            nama: document.getElementById("nama").value,
+            alamat: document.getElementById("alamat").value,
+            nd: document.getElementById("nd").value,
+            odp: document.getElementById("odp").value,
+            taggingan: document.getElementById("taggingan").value,
+            odc: document.getElementById("odc").value,
+            cp: document.getElementById("cp").value,
+            redaman: document.getElementById("redaman").value
+        };
+        dataTeknisi.push(newData);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
         loadData();
         closeModal();
     }
 
+    function deleteRow(index) {
+        dataTeknisi.splice(index, 1);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        loadData();
+    }
+
+    function searchData() {
+        let keyword = document.getElementById("search").value.toLowerCase();
+        let filteredData = dataTeknisi.filter(item =>
+            Object.values(item).some(val => val.toLowerCase().includes(keyword))
+        );
+        dataTeknisi = filteredData;
+        loadData();
+    }
+
     function logout() {
-        localStorage.clear();
+        localStorage.removeItem("username");
         window.location.href = "index.html";
     }
+
+    function openModal() { document.getElementById("dataModal").style.display = "block"; }
+    function closeModal() { document.getElementById("dataModal").style.display = "none"; }
 </script>
+
 </body>
 </html>
