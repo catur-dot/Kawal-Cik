@@ -71,6 +71,24 @@
             border-radius: 5px;
             cursor: pointer;
         }
+        #dataModal {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body onload="loadData()">
@@ -107,16 +125,18 @@
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+<div id="dataModal">
     <h3>Tambah Data Baru</h3>
-    <input type="text" id="nama" placeholder="Nama"><br><br>
-    <input type="text" id="alamat" placeholder="Alamat"><br><br>
-    <input type="text" id="nd" placeholder="ND"><br><br>
-    <input type="text" id="odp" placeholder="ODP"><br><br>
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
-    <input type="text" id="odc" placeholder="ODC"><br><br>
-    <input type="text" id="cp" placeholder="CP"><br><br>
-    <input type="text" id="redaman" placeholder="Redaman"><br><br>
+    <div class="modal-content">
+        <input type="text" id="nama" placeholder="Nama"><br>
+        <input type="text" id="alamat" placeholder="Alamat"><br>
+        <input type="text" id="nd" placeholder="ND"><br>
+        <input type="text" id="odp" placeholder="ODP"><br>
+        <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br>
+        <input type="text" id="odc" placeholder="ODC"><br>
+        <input type="text" id="cp" placeholder="CP"><br>
+        <input type="text" id="redaman" placeholder="Redaman"><br>
+    </div>
     <button onclick="addData()">Tambah</button>
     <button onclick="closeModal()">Tutup</button>
 </div>
@@ -145,6 +165,7 @@
             `;
             tableBody.innerHTML += row;
         });
+
         document.getElementById("btn-add").style.display = currentUser === "24960059" ? "block" : "none";
     }
 
@@ -159,18 +180,24 @@
     }
 
     function addData() {
-        let newData = {
-            nama: document.getElementById("nama").value,
-            alamat: document.getElementById("alamat").value,
-            nd: document.getElementById("nd").value,
-            odp: document.getElementById("odp").value,
-            taggingan: document.getElementById("taggingan").value,
-            odc: document.getElementById("odc").value,
-            cp: document.getElementById("cp").value,
-            redaman: document.getElementById("redaman").value
-        };
+        let nama = document.getElementById("nama").value.trim();
+        let alamat = document.getElementById("alamat").value.trim();
+        let nd = document.getElementById("nd").value.trim();
+        let odp = document.getElementById("odp").value.trim();
+        let taggingan = document.getElementById("taggingan").value.trim();
+        let odc = document.getElementById("odc").value.trim();
+        let cp = document.getElementById("cp").value.trim();
+        let redaman = document.getElementById("redaman").value.trim();
+
+        if (!nama || !alamat || !nd || !odp || !taggingan || !odc || !cp || !redaman) {
+            alert("Harap isi semua bidang.");
+            return;
+        }
+
+        let newData = { nama, alamat, nd, odp, taggingan, odc, cp, redaman };
         dataTeknisi.push(newData);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        
         closeModal();
         loadData();
     }
