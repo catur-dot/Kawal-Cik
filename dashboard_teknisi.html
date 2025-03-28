@@ -37,7 +37,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .search-bar button {
+        .search-bar button, .btn-add, .btn-logout {
             background: blue;
             color: white;
             padding: 8px;
@@ -47,20 +47,7 @@
         }
         .btn-logout {
             background: darkred;
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
             float: right;
-        }
-        .btn-add {
-            background: green;
-            color: white;
-            padding: 8px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
         }
         table {
             width: 100%;
@@ -86,7 +73,7 @@
         }
     </style>
 </head>
-<body onload="checkUserRole(); loadData();">
+<body onload="loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
@@ -94,7 +81,7 @@
     <button class="btn-logout" onclick="logout()">Logout</button>
 
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau Alamat" onkeyup="searchOrder()">
+        <input type="text" id="search" placeholder="Cari Nama atau Alamat">
         <button onclick="searchOrder()">Search</button>
     </div>
 
@@ -108,11 +95,11 @@
                 <th>ALAMAT</th>
                 <th>ND</th>
                 <th>ODP</th>
-                <th>TAGGINGAN</th>
+                <th>TAGGINGAN RUMAH</th>
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th>ACTION</th>
+                <th></th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -126,7 +113,7 @@
     <input type="text" id="alamat" placeholder="Alamat"><br><br>
     <input type="text" id="nd" placeholder="ND"><br><br>
     <input type="text" id="odp" placeholder="ODP"><br><br>
-    <input type="text" id="taggingan" placeholder="Taggingan"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
     <input type="text" id="odc" placeholder="ODC"><br><br>
     <input type="text" id="cp" placeholder="CP"><br><br>
     <input type="text" id="redaman" placeholder="Redaman"><br><br>
@@ -135,25 +122,51 @@
 </div>
 
 <script>
-    let userRole = localStorage.getItem("userRole");
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+    let currentUser = localStorage.getItem("username");
 
-    function checkUserRole() {
-        if (userRole !== "superadmin") {
+    function loadData() {
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+
+        dataTeknisi.forEach((item, index) => {
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+                <td>
+                    ${currentUser === "24960059" ? `<button class="btn-delete" onclick="deleteRow(${index})">Hapus</button>` : ""}
+                </td>
+            `;
+        });
+
+        // Sembunyikan tombol tambah data jika bukan superadmin
+        if (currentUser !== "24960059") {
             document.getElementById("btn-add").style.display = "none";
         }
     }
 
     function openModal() {
-        if (userRole === "superadmin") {
+        if (currentUser === "24960059") {
             document.getElementById("dataModal").style.display = "block";
         } else {
-            alert("Anda tidak memiliki izin untuk menambah data!");
+            alert("Anda tidak memiliki izin untuk menambah data");
         }
     }
 
     function closeModal() {
         document.getElementById("dataModal").style.display = "none";
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
     }
 
     function addData() {
@@ -166,9 +179,9 @@
         let cp = document.getElementById("cp").value;
         let redaman = document.getElementById("redaman").value;
 
-        if (nama && alamat && nd) {
+        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
             dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            saveToLocalStorage();
             loadData();
             closeModal();
         } else {
@@ -176,43 +189,30 @@
         }
     }
 
-    function loadData(filteredData = null) {
-        let tableBody = document.querySelector("#orderTable tbody");
-        tableBody.innerHTML = "";
-
-        let dataToDisplay = filteredData || dataTeknisi;
-
-        dataToDisplay.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.alamat}</td>
-                <td>${item.nd}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.cp}</td>
-                <td>${item.redaman}</td>
-                <td>${userRole === "superadmin" ? `<button class="btn-delete" onclick="deleteRow(${index})">Hapus</button>` : ""}</td>
-            `;
-        });
-    }
-
     function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        loadData();
+        if (currentUser === "24960059") {
+            dataTeknisi.splice(index, 1);
+            saveToLocalStorage();
+            loadData();
+        } else {
+            alert("Anda tidak memiliki izin untuk menghapus data");
+        }
     }
 
     function searchOrder() {
         let keyword = document.getElementById("search").value.toLowerCase();
-        let filteredData = dataTeknisi.filter(item => item.nama.toLowerCase().includes(keyword) || item.alamat.toLowerCase().includes(keyword));
-        loadData(filteredData);
+        let filteredData = dataTeknisi.filter(item =>
+            item.nama.toLowerCase().includes(keyword) ||
+            item.alamat.toLowerCase().includes(keyword)
+        );
+
+        dataTeknisi = filteredData;
+        loadData();
     }
 
     function logout() {
-        window.location.href = "login.html";
+        localStorage.clear();
+        window.location.href = "index.html";
     }
 </script>
 
