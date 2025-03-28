@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Login </title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <div class="quote-section">
-            <h2>"Data INDIHOME "</h2>
-            <p></p>
-        </div>
-        <div class="login-section">
-            <h2>Hallo Selamat datang Manusia - Manusia </h2>
-            <form id="loginForm">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-                
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+        <h2>DASHBOARD INDIHOME</h2>
+        <form id="loginForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="password" id="password" placeholder="Password" required>
+            
+            <select id="role">
+                <option value="teknisi">Teknisi</option>
+                <option value="teamleader">Team Leader</option>
+            </select>
 
-                <button type="submit">Sign In</button>
-            </form>
-            <p id="message"></p>
-        </div>
+            <div class="captcha-container">
+                <span id="captchaText"></span>
+                <button type="button" onclick="generateCaptcha()">🔄</button>
+            </div>
+            <input type="text" id="captchaInput" placeholder="Input Captcha" required>
+
+            <button type="submit">Log in</button>
+        </form>
+        <p id="message"></p>
+
+        <p class="contact">Telegram Contact: @HelpdeskIboosterBot</p>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
