@@ -71,24 +71,6 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        #dataModal {
-            display: none;
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, 0);
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-        }
-        .modal-content input {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
     </style>
 </head>
 <body onload="loadData()">
@@ -103,7 +85,7 @@
         <button onclick="searchOrder()">Search</button>
     </div>
 
-    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+    <button class="btn-add" onclick="openModal()" id="btn-add" style="display: none;">Tambah Data</button>
 
     <table id="orderTable">
         <thead>
@@ -125,18 +107,16 @@
 </div>
 
 <!-- Modal Form -->
-<div id="dataModal">
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
-    <div class="modal-content">
-        <input type="text" id="nama" placeholder="Nama"><br>
-        <input type="text" id="alamat" placeholder="Alamat"><br>
-        <input type="text" id="nd" placeholder="ND"><br>
-        <input type="text" id="odp" placeholder="ODP"><br>
-        <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br>
-        <input type="text" id="odc" placeholder="ODC"><br>
-        <input type="text" id="cp" placeholder="CP"><br>
-        <input type="text" id="redaman" placeholder="Redaman"><br>
-    </div>
+    <input type="text" id="nama" placeholder="Nama"><br><br>
+    <input type="text" id="alamat" placeholder="Alamat"><br><br>
+    <input type="text" id="nd" placeholder="ND"><br><br>
+    <input type="text" id="odp" placeholder="ODP"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="odc" placeholder="ODC"><br><br>
+    <input type="text" id="cp" placeholder="CP"><br><br>
+    <input type="text" id="redaman" placeholder="Redaman"><br><br>
     <button onclick="addData()">Tambah</button>
     <button onclick="closeModal()">Tutup</button>
 </div>
@@ -148,6 +128,7 @@
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
+
         dataTeknisi.forEach((item, index) => {
             let row = `
                 <tr>
@@ -166,12 +147,15 @@
             tableBody.innerHTML += row;
         });
 
-        document.getElementById("btn-add").style.display = currentUser === "24960059" ? "block" : "none";
+        // Tampilkan tombol "Tambah Data" hanya untuk user 24960059
+        document.getElementById("btn-add").style.display = (currentUser === "24960059") ? "block" : "none";
     }
 
     function openModal() {
         if (currentUser === "24960059") {
             document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki akses untuk menambah data.");
         }
     }
 
@@ -197,7 +181,7 @@
         let newData = { nama, alamat, nd, odp, taggingan, odc, cp, redaman };
         dataTeknisi.push(newData);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        
+
         closeModal();
         loadData();
     }
@@ -212,6 +196,10 @@
         localStorage.clear();
         window.location.href = "index.html";
     }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        loadData();
+    });
 </script>
 
 </body>
