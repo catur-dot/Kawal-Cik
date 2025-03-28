@@ -73,16 +73,20 @@
         }
     </style>
 </head>
-<body onload="loadData()">
+<body>
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
+
     <button class="btn-logout" onclick="logout()">Logout</button>
+
     <div class="search-bar">
         <input type="text" id="search" placeholder="Cari Nama atau Alamat">
         <button onclick="searchOrder()">Search</button>
     </div>
+
     <button class="btn-add" onclick="openModal()" id="btn-add" style="display: none;">Tambah Data</button>
+
     <table id="orderTable">
         <thead>
             <tr>
@@ -95,13 +99,14 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
 
+<!-- Modal Form -->
 <div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
     <input type="text" id="nama" placeholder="Nama"><br><br>
@@ -119,9 +124,11 @@
 <script>
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
     let currentUser = localStorage.getItem("username");
+
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
+
         dataTeknisi.forEach((item, index) => {
             let row = `
                 <tr>
@@ -139,18 +146,24 @@
             `;
             tableBody.innerHTML += row;
         });
+
         if (currentUser === "24960059") {
             document.getElementById("btn-add").style.display = "block";
         }
     }
+
     function openModal() {
         if (currentUser === "24960059") {
             document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki akses untuk menambah data.");
         }
     }
+
     function closeModal() {
         document.getElementById("dataModal").style.display = "none";
     }
+
     function addData() {
         let newData = {
             nama: document.getElementById("nama").value,
@@ -162,21 +175,30 @@
             cp: document.getElementById("cp").value,
             redaman: document.getElementById("redaman").value
         };
+        
         dataTeknisi.push(newData);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+
         closeModal();
         loadData();
     }
+
     function deleteRow(index) {
         dataTeknisi.splice(index, 1);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
         loadData();
     }
+
     function logout() {
-        localStorage.clear();
+        localStorage.removeItem("username"); // ✅ Hanya hapus username, data tetap aman
         window.location.href = "index.html";
     }
+
     window.onload = function() {
+        if (!currentUser) {
+            localStorage.setItem("username", "24960059");
+            currentUser = "24960059";
+        }
         loadData();
     };
 </script>
