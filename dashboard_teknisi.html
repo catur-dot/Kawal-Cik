@@ -73,7 +73,7 @@
         }
     </style>
 </head>
-<body onload="loadData()">
+<body onload="checkUserRole(); loadData()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
@@ -125,9 +125,15 @@
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
     let currentUser = localStorage.getItem("username");
 
+    function checkUserRole() {
+        if (currentUser !== "24960059") {
+            document.getElementById("btn-add").style.display = "none";
+        }
+    }
+
     function loadData() {
         let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = ""; // Bersihkan tabel sebelum diisi ulang
+        tableBody.innerHTML = ""; 
 
         dataTeknisi.forEach((item, index) => {
             let newRow = tableBody.insertRow();
@@ -146,11 +152,6 @@
                 </td>
             `;
         });
-
-        // Sembunyikan tombol tambah data jika bukan superadmin
-        if (currentUser !== "24960059") {
-            document.getElementById("btn-add").style.display = "none";
-        }
     }
 
     function openModal() {
@@ -201,13 +202,30 @@
 
     function searchOrder() {
         let keyword = document.getElementById("search").value.toLowerCase();
-        let filteredData = dataTeknisi.filter(item =>
+        let filteredData = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+
+        let result = filteredData.filter(item =>
             item.nama.toLowerCase().includes(keyword) ||
             item.alamat.toLowerCase().includes(keyword)
         );
 
-        dataTeknisi = filteredData;
-        loadData();
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = "";
+
+        result.forEach((item, index) => {
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${item.nama}</td>
+                <td>${item.alamat}</td>
+                <td>${item.nd}</td>
+                <td>${item.odp}</td>
+                <td>${item.taggingan}</td>
+                <td>${item.odc}</td>
+                <td>${item.cp}</td>
+                <td>${item.redaman}</td>
+            `;
+        });
     }
 
     function logout() {
