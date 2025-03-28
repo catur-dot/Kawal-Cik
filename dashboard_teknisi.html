@@ -37,7 +37,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .btn {
+        .search-bar button, .btn-add, .btn-logout {
             background: blue;
             color: white;
             padding: 8px;
@@ -73,16 +73,20 @@
         }
     </style>
 </head>
-<body onload="initializeDashboard()">
+<body onload="checkUserRole()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
-    <button class="btn btn-logout" onclick="logout()">Logout</button>
+
+    <button class="btn-logout" onclick="logout()">Logout</button>
+
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau Alamat">
-        <button class="btn" onclick="searchOrder()">Search</button>
+        <input type="text" id="search" placeholder="Cari Internet atau Nama">
+        <button onclick="searchOrder()">Search</button>
     </div>
-    <button class="btn" id="btn-add" onclick="openModal()" style="display:none;">Tambah Data</button>
+
+    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+
     <table id="orderTable">
         <thead>
             <tr>
@@ -91,7 +95,7 @@
                 <th>ALAMAT</th>
                 <th>ND</th>
                 <th>ODP</th>
-                <th>TAGGINGAN</th>
+                <th>TAGGINGAN RUMAH</th>
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
@@ -102,33 +106,50 @@
     </table>
 </div>
 
-<div id="dataModal" style="display:none;">
+<!-- Modal Form -->
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
     <h3>Tambah Data Baru</h3>
-    <input type="text" id="nama" placeholder="Nama">
-    <input type="text" id="alamat" placeholder="Alamat">
-    <input type="text" id="nd" placeholder="ND">
-    <input type="text" id="odp" placeholder="ODP">
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah">
-    <input type="text" id="odc" placeholder="ODC">
-    <input type="text" id="cp" placeholder="CP">
-    <input type="text" id="redaman" placeholder="Redaman">
+    <input type="text" id="nama" placeholder="Nama"><br><br>
+    <input type="text" id="alamat" placeholder="Alamat"><br><br>
+    <input type="text" id="nd" placeholder="ND"><br><br>
+    <input type="text" id="odp" placeholder="ODP"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="odc" placeholder="ODC"><br><br>
+    <input type="text" id="cp" placeholder="CP"><br><br>
+    <input type="text" id="redaman" placeholder="Redaman"><br><br>
     <button onclick="addData()">Tambah</button>
     <button onclick="closeModal()">Tutup</button>
 </div>
 
 <script>
+    let userRole = localStorage.getItem("userRole");
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-    let currentUser = localStorage.getItem("username");
 
-    function initializeDashboard() {
-        if (currentUser === "24960059") {
-            document.getElementById("btn-add").style.display = "block";
+    function checkUserRole() {
+        if (userRole !== "superadmin") {
+            document.getElementById("btn-add").style.display = "none";
         }
         loadData();
     }
 
+    function openModal() {
+        if (userRole === "superadmin") {
+            document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki izin untuk menambah data");
+        }
+    }
+
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+    }
+
     function loadData() {
-        let tableBody = document.querySelector("#orderTable tbody");
+        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
         tableBody.innerHTML = "";
         dataTeknisi.forEach((item, index) => {
             let row = `<tr>
@@ -141,55 +162,25 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
-                <td>${currentUser === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
             </tr>`;
             tableBody.innerHTML += row;
         });
     }
 
-    function openModal() {
-        if (currentUser === "24960059") {
-            document.getElementById("dataModal").style.display = "block";
-        } else {
-            alert("Anda tidak memiliki izin");
-        }
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
     function addData() {
-        let newData = {
-            nama: document.getElementById("nama").value,
-            alamat: document.getElementById("alamat").value,
-            nd: document.getElementById("nd").value,
-            odp: document.getElementById("odp").value,
-            taggingan: document.getElementById("taggingan").value,
-            odc: document.getElementById("odc").value,
-            cp: document.getElementById("cp").value,
-            redaman: document.getElementById("redaman").value
-        };
-        dataTeknisi.push(newData);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        let nama = document.getElementById("nama").value;
+        let alamat = document.getElementById("alamat").value;
+        let nd = document.getElementById("nd").value;
+        let odp = document.getElementById("odp").value;
+        let taggingan = document.getElementById("taggingan").value;
+        let odc = document.getElementById("odc").value;
+        let cp = document.getElementById("cp").value;
+        let redaman = document.getElementById("redaman").value;
+        
+        dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
+        saveToLocalStorage();
         loadData();
         closeModal();
-    }
-
-    function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        loadData();
-    }
-
-    function searchOrder() {
-        let keyword = document.getElementById("search").value.toLowerCase();
-        let filteredData = dataTeknisi.filter(item =>
-            item.nama.toLowerCase().includes(keyword) ||
-            item.alamat.toLowerCase().includes(keyword)
-        );
-        dataTeknisi = filteredData;
-        loadData();
     }
 
     function logout() {
@@ -197,6 +188,5 @@
         window.location.href = "index.html";
     }
 </script>
-
 </body>
 </html>
