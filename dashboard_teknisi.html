@@ -110,6 +110,7 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
+                <th>DITAMBAHKAN OLEH</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -133,9 +134,11 @@
 </div>
 
 <script>
+    let username = localStorage.getItem("username");
     let userRole = localStorage.getItem("userRole");
 
-    console.log("User Role:", userRole); // Debugging untuk memastikan role terbaca
+    console.log("User Role:", userRole); // Debugging
+    console.log("Username:", username); // Debugging
 
     function checkUserRole() {
         if (userRole !== "superadmin") {
@@ -189,6 +192,7 @@
             <td>${odc}</td>
             <td>${cp}</td>
             <td>${redaman}</td>
+            <td>${username}</td>
             <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
         `;
 
@@ -205,6 +209,7 @@
     }
 
     function logout() {
+        localStorage.removeItem("username");
         localStorage.removeItem("userRole");
         window.location.href = "login.html";
     }
