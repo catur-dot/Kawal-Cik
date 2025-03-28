@@ -37,7 +37,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-        .search-bar button, .btn-add, .btn-logout {
+        .search-bar button {
             background: blue;
             color: white;
             padding: 8px;
@@ -47,7 +47,20 @@
         }
         .btn-logout {
             background: darkred;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             float: right;
+        }
+        .btn-add {
+            background: green;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         table {
             width: 100%;
@@ -77,10 +90,11 @@
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
+
     <button class="btn-logout" onclick="logout()">Logout</button>
-    
+
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau ODP">
+        <input type="text" id="search" placeholder="Cari Nama atau Alamat">
         <button onclick="searchOrder()">Search</button>
     </div>
 
@@ -94,11 +108,11 @@
                 <th>ALAMAT</th>
                 <th>ND</th>
                 <th>ODP</th>
-                <th>TAGGINGAN RUMAH</th>
+                <th>TAGGINGAN</th>
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th>Aksi</th>
+                <th>ACTION</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -112,7 +126,7 @@
     <input type="text" id="alamat" placeholder="Alamat"><br><br>
     <input type="text" id="nd" placeholder="ND"><br><br>
     <input type="text" id="odp" placeholder="ODP"><br><br>
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan"><br><br>
     <input type="text" id="odc" placeholder="ODC"><br><br>
     <input type="text" id="cp" placeholder="CP"><br><br>
     <input type="text" id="redaman" placeholder="Redaman"><br><br>
@@ -127,7 +141,6 @@
     function checkUserRole() {
         if (userRole !== "superadmin") {
             document.getElementById("btn-add").style.display = "none";
-            document.querySelectorAll(".btn-delete").forEach(btn => btn.style.display = "none");
         }
     }
 
@@ -135,7 +148,7 @@
         if (userRole === "superadmin") {
             document.getElementById("dataModal").style.display = "block";
         } else {
-            alert("Anda tidak memiliki izin untuk menambah data");
+            alert("Anda tidak memiliki izin untuk menambah data!");
         }
     }
 
@@ -144,27 +157,32 @@
     }
 
     function addData() {
-        let newData = {
-            nama: document.getElementById("nama").value,
-            alamat: document.getElementById("alamat").value,
-            nd: document.getElementById("nd").value,
-            odp: document.getElementById("odp").value,
-            taggingan: document.getElementById("taggingan").value,
-            odc: document.getElementById("odc").value,
-            cp: document.getElementById("cp").value,
-            redaman: document.getElementById("redaman").value
-        };
-        dataTeknisi.push(newData);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        loadData();
-        closeModal();
+        let nama = document.getElementById("nama").value;
+        let alamat = document.getElementById("alamat").value;
+        let nd = document.getElementById("nd").value;
+        let odp = document.getElementById("odp").value;
+        let taggingan = document.getElementById("taggingan").value;
+        let odc = document.getElementById("odc").value;
+        let cp = document.getElementById("cp").value;
+        let redaman = document.getElementById("redaman").value;
+
+        if (nama && alamat && nd) {
+            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
+            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            loadData();
+            closeModal();
+        } else {
+            alert("Semua kolom harus diisi!");
+        }
     }
 
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
+
         dataTeknisi.forEach((item, index) => {
-            let row = `<tr>
+            let newRow = tableBody.insertRow();
+            newRow.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${item.nama}</td>
                 <td>${item.alamat}</td>
@@ -174,10 +192,22 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
-                <td><button class="btn-delete" onclick="deleteRow(${index})">Hapus</button></td>
-            </tr>`;
-            tableBody.innerHTML += row;
+                <td>${userRole === "superadmin" ? `<button class="btn-delete" onclick="deleteRow(${index})">Hapus</button>` : ""}</td>
+            `;
         });
+    }
+
+    function deleteRow(index) {
+        dataTeknisi.splice(index, 1);
+        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+        loadData();
+    }
+
+    function searchOrder() {
+        let keyword = document.getElementById("search").value.toLowerCase();
+        dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+        let filteredData = dataTeknisi.filter(item => item.nama.toLowerCase().includes(keyword) || item.alamat.toLowerCase().includes(keyword));
+        loadData(filteredData);
     }
 
     function logout() {
