@@ -26,13 +26,27 @@
             text-align: center;
             border-radius: 5px;
         }
-        .btn-logout {
-            background: darkred;
+        .search-bar {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .search-bar input {
+            width: 80%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-bar button, .btn-add, .btn-logout {
+            background: blue;
             color: white;
             padding: 8px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+        }
+        .btn-logout {
+            background: darkred;
             float: right;
         }
         table {
@@ -59,12 +73,20 @@
         }
     </style>
 </head>
-<body>
+<body onload="checkUserRole()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
+
     <button class="btn-logout" onclick="logout()">Logout</button>
-    
+
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Cari Internet atau Nama">
+        <button onclick="searchOrder()">Search</button>
+    </div>
+
+    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+
     <table id="orderTable">
         <thead>
             <tr>
@@ -77,57 +99,60 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th id="actionColumn"></th>
+                <th></th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
 </div>
 
+<!-- Modal Form -->
+<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+    <h3>Tambah Data Baru</h3>
+    <input type="text" id="nama" placeholder="Nama"><br><br>
+    <input type="text" id="alamat" placeholder="Alamat"><br><br>
+    <input type="text" id="nd" placeholder="ND"><br><br>
+    <input type="text" id="odp" placeholder="ODP"><br><br>
+    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br><br>
+    <input type="text" id="odc" placeholder="ODC"><br><br>
+    <input type="text" id="cp" placeholder="CP"><br><br>
+    <input type="text" id="redaman" placeholder="Redaman"><br><br>
+    <button onclick="addData()">Tambah</button>
+    <button onclick="closeModal()">Tutup</button>
+</div>
+
 <script>
-    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-    let role = localStorage.getItem("userRole");
+    let userRole = localStorage.getItem("userRole");
 
-    function loadData() {
-        let tableBody = document.getElementById("orderTable").getElementsByTagName("tbody")[0];
-        tableBody.innerHTML = "";
+    function checkUserRole() {
+        if (userRole === "viewer") {
+            document.getElementById("btn-add").style.display = "none";
+            document.querySelectorAll(".btn-delete").forEach(btn => btn.style.display = "none");
+        }
+    }
 
-        dataTeknisi.forEach((item, index) => {
-            let newRow = tableBody.insertRow();
-            newRow.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.alamat}</td>
-                <td>${item.nd}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.cp}</td>
-                <td>${item.redaman}</td>
-                ${role === "Team Leader" ? `<td><button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button></td>` : ""}
-            `;
-        });
-
-        if (role !== "Team Leader") {
-            document.getElementById("actionColumn").style.display = "none";
+    function openModal() {
+        if (userRole === "superadmin") {
+            document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki izin untuk menambah data");
         }
     }
 
     function deleteRow(index) {
-        if (role === "Team Leader") {
+        if (userRole === "superadmin") {
             dataTeknisi.splice(index, 1);
-            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            saveToLocalStorage();
             loadData();
+        } else {
+            alert("Anda tidak memiliki izin untuk menghapus data");
         }
     }
 
     function logout() {
         localStorage.removeItem("userRole");
-        localStorage.removeItem("dataTeknisi");
         window.location.href = "login.html";
     }
-
-    loadData();
 </script>
 
 </body>
