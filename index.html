@@ -3,83 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard </title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="login-container">
-        <div class="login-box">
-            <h2>DASHBOARD INDIIHOME</h2>
-            <input type="text" id="username" placeholder="Username">
-            <input type="password" id="password" placeholder="Password">
-            <select id="role">
-                <option value="Teknisi">Teknisi</option>
-                <option value="Team Leader">Team Leader</option>
-            </select>
-            <button onclick="login()">Log in</button>
-            <p class="contact">Telegram Contact: @basjuniarto</p>
-        </div>
-    </div>
-    <script>
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const role = document.getElementById("role").value;
-            
-            if ((username === "24960059" && password === "telkom135" && role === "Team Leader") ||
-                (username === "admin" && password === "telkom135" && role === "Teknisi")) {
-                alert("Login Berhasil!");
-                // Redirect ke dashboard yang sesuai
-                window.location.href = "dashboard.html";
-            } else {
-                alert("Username atau Password salah!");
-            }
-        }
-    </script>
+    <title>Login Dashboard</title>
     <style>
         body {
-            background-color: #4a5d6e;
+            background: url('image.png') no-repeat center center fixed;
+            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            font-family: Arial, sans-serif;
         }
         .login-container {
-            text-align: center;
-        }
-        .login-box {
-            background-color: white;
+            background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
             width: 300px;
         }
-        h2 {
-            background-color: darkred;
+        .login-container h2 {
+            background: darkred;
             color: white;
             padding: 10px;
-            margin: -20px -20px 20px -20px;
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
+            border-radius: 5px;
         }
-        input, select, button {
+        .login-container input, .login-container select, .login-container button {
             width: 100%;
             margin: 10px 0;
             padding: 10px;
-            border: 1px solid #ccc;
             border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        button {
-            background-color: darkred;
+        .login-container button {
+            background: darkred;
             color: white;
-            cursor: pointer;
             border: none;
+            cursor: pointer;
         }
-        .contact {
+        .contact-info {
             margin-top: 10px;
-            color: darkred;
+            font-size: 14px;
         }
     </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>DASHBOARD INDIHOME</h2>
+        <input type="text" placeholder="Username" id="username">
+        <input type="password" placeholder="Password" id="password">
+        <select id="role">
+            <option value="Teknisi">Teknisi</option>
+            <option value="Team Leader">Team Leader</option>
+        </select>
+        <button onclick="login()">Log in</button>
+        <div class="contact-info">
+            Telegram Contact: <strong>@basjuniarto</strong>
+        </div>
+    </div>
+    <script>
+        function login() {
+            let username = document.getElementById("username").value;
+            let password = document.getElementById("password").value;
+            let role = document.getElementById("role").value;
+            
+            if (username === "24960059" && password === "telkom135" && role === "Team Leader") {
+                alert("Login berhasil sebagai Team Leader");
+            } else if (username === "admin" && password === "telkom135" && role === "Teknisi") {
+                alert("Login berhasil sebagai Teknisi");
+            } else {
+                alert("Username atau password salah");
+            }
+        }
+    </script>
 </body>
 </html>
