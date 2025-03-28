@@ -74,112 +74,105 @@
     </style>
 </head>
 <body onload="loadData()">
-
-<div class="container">
-    <h2>Dashboard Teknisi</h2>
-
-    <button class="btn-logout" onclick="logout()">Logout</button>
-
-    <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau ND">
-        <button onclick="searchData()">Cari</button>
+    <div class="container">
+        <h2>Dashboard Teknisi</h2>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Cari Nama atau ND">
+            <button onclick="searchOrder()">Cari</button>
+        </div>
+        <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
+        <table id="orderTable">
+            <thead>
+                <tr>
+                    <th>NO</th>
+                    <th>NAMA</th>
+                    <th>ND</th>
+                    <th>ALAMAT</th>
+                    <th>AKSI</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
-
-    <button class="btn-add" onclick="openModal()" id="btn-add" style="display: none;">Tambah Data</button>
-
-    <table id="orderTable">
-        <thead>
-            <tr>
-                <th>NO</th>
-                <th>NAMA</th>
-                <th>ND</th>
-                <th>ALAMAT</th>
-                <th>ODP</th>
-                <th>TAGGINGAN</th>
-                <th>ODC</th>
-                <th>REDAMAN</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-</div>
-
-<!-- Modal Form -->
-<div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
-    <h3>Tambah Data Baru</h3>
-    <input type="text" id="nama" placeholder="Nama"><br>
-    <input type="text" id="nd" placeholder="ND"><br>
-    <input type="text" id="alamat" placeholder="Alamat"><br>
-    <input type="text" id="odp" placeholder="ODP"><br>
-    <input type="text" id="taggingan" placeholder="Taggingan Rumah"><br>
-    <input type="text" id="odc" placeholder="ODC"><br>
-    <input type="text" id="redaman" placeholder="Redaman"><br>
-    <button onclick="addData()">Tambah</button>
-    <button onclick="closeModal()">Tutup</button>
-</div>
-
-<script>
-    let user = localStorage.getItem("username");
-    let isSuperAdmin = (user === "24960059");
-    document.getElementById("btn-add").style.display = isSuperAdmin ? "block" : "none";
-    
-    function loadData() {
-        let data = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-        let tbody = document.querySelector("#orderTable tbody");
-        tbody.innerHTML = "";
-        data.forEach((item, index) => {
-            let row = `<tr>
-                <td>${index + 1}</td>
-                <td>${item.nama}</td>
-                <td>${item.nd}</td>
-                <td>${item.alamat}</td>
-                <td>${item.odp}</td>
-                <td>${item.taggingan}</td>
-                <td>${item.odc}</td>
-                <td>${item.redaman}</td>
-                <td>${isSuperAdmin ? `<button class='btn-delete' onclick='deleteData(${index})'>Hapus</button>` : ""}</td>
-            </tr>`;
-            tbody.innerHTML += row;
-        });
-    }
-
-    function addData() {
-        let data = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-        let newData = {
-            nama: document.getElementById("nama").value,
-            nd: document.getElementById("nd").value,
-            alamat: document.getElementById("alamat").value,
-            odp: document.getElementById("odp").value,
-            taggingan: document.getElementById("taggingan").value,
-            odc: document.getElementById("odc").value,
-            redaman: document.getElementById("redaman").value
-        };
-        data.push(newData);
-        localStorage.setItem("dataTeknisi", JSON.stringify(data));
-        closeModal();
-        loadData();
-    }
-
-    function deleteData(index) {
-        let data = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-        data.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(data));
-        loadData();
-    }
-
-    function searchData() {
-        let keyword = document.getElementById("search").value.toLowerCase();
-        let data = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-        let filteredData = data.filter(item => item.nama.toLowerCase().includes(keyword) || item.nd.includes(keyword));
-        localStorage.setItem("dataTeknisi", JSON.stringify(filteredData));
-        loadData();
-    }
-
-    function logout() {
-        localStorage.removeItem("username");
-        window.location.href = "index.html";
-    }
-</script>
+    <div id="dataModal" style="display: none; position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: white; padding: 20px; border-radius: 10px;">
+        <h3>Tambah Data Baru</h3>
+        <input type="text" id="nama" placeholder="Nama"><br><br>
+        <input type="text" id="nd" placeholder="ND"><br><br>
+        <input type="text" id="alamat" placeholder="Alamat"><br><br>
+        <button onclick="addData()">Tambah</button>
+        <button onclick="closeModal()">Tutup</button>
+    </div>
+    <script>
+        let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+        let username = localStorage.getItem("username");
+        
+        function loadData() {
+            let tbody = document.querySelector("#orderTable tbody");
+            tbody.innerHTML = "";
+            dataTeknisi.forEach((data, index) => {
+                let row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${data.nama}</td>
+                    <td>${data.nd}</td>
+                    <td>${data.alamat}</td>
+                    <td>${username === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+            if (username !== "24960059") {
+                document.getElementById("btn-add").style.display = "none";
+            }
+        }
+        
+        function openModal() {
+            if (username === "24960059") {
+                document.getElementById("dataModal").style.display = "block";
+            } else {
+                alert("Anda tidak memiliki izin untuk menambah data");
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById("dataModal").style.display = "none";
+        }
+        
+        function addData() {
+            let nama = document.getElementById("nama").value;
+            let nd = document.getElementById("nd").value;
+            let alamat = document.getElementById("alamat").value;
+            dataTeknisi.push({ nama, nd, alamat });
+            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            closeModal();
+            loadData();
+        }
+        
+        function deleteRow(index) {
+            dataTeknisi.splice(index, 1);
+            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            loadData();
+        }
+        
+        function searchOrder() {
+            let searchText = document.getElementById("search").value.toLowerCase();
+            let filteredData = dataTeknisi.filter(item => item.nama.toLowerCase().includes(searchText) || item.nd.includes(searchText));
+            let tbody = document.querySelector("#orderTable tbody");
+            tbody.innerHTML = "";
+            filteredData.forEach((data, index) => {
+                let row = `<tr>
+                    <td>${index + 1}</td>
+                    <td>${data.nama}</td>
+                    <td>${data.nd}</td>
+                    <td>${data.alamat}</td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        
+        function logout() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    </script>
 </body>
 </html>
