@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Valins ID">
-            <button onclick="search()">Search</button>
-            <button onclick="resetSearch()">Reset Search</button>
-        </div>
+    <div class="dashboard-container">
+        <h2>Dashboard</h2>
+        <input type="text" placeholder="Valins ID">
+        <button>Search</button>
+        <button>Reset Search</button>
+
         <table>
             <thead>
                 <tr>
                     <th>COMPLETE</th>
-                    <th>ORDERID</th>
+                    <th>ORDER ID</th>
                     <th>SOURCE</th>
                     <th>ORDER STATE</th>
                     <th>TYPE</th>
@@ -34,12 +34,11 @@
                     <td>In Progress</td>
                     <td>SOM_ProvisionServiceOrderFulfillment</td>
                     <td>SOM_FalloutProcess</td>
-                    <td>SM8DFLZN6BBF70...</td>
+                    <td>SM8DFLZN6BBF70MSAOEY9PFTA-...</td>
                     <td>UpdateDesignTask</td>
                 </tr>
             </tbody>
         </table>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
