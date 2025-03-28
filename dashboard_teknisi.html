@@ -73,7 +73,7 @@
         }
     </style>
 </head>
-<body onload="loadData()">
+<body>
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
@@ -99,7 +99,7 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
-                <th></th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -125,6 +125,8 @@
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
     let currentUser = localStorage.getItem("username");
 
+    console.log("User login:", currentUser); // Debugging
+
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
         tableBody.innerHTML = "";
@@ -147,8 +149,9 @@
             tableBody.innerHTML += row;
         });
 
-        // Tampilkan tombol "Tambah Data" hanya untuk user 24960059
-        document.getElementById("btn-add").style.display = (currentUser === "24960059") ? "block" : "none";
+        if (currentUser === "24960059") {
+            document.getElementById("btn-add").style.display = "block";
+        }
     }
 
     function openModal() {
@@ -164,21 +167,17 @@
     }
 
     function addData() {
-        let nama = document.getElementById("nama").value.trim();
-        let alamat = document.getElementById("alamat").value.trim();
-        let nd = document.getElementById("nd").value.trim();
-        let odp = document.getElementById("odp").value.trim();
-        let taggingan = document.getElementById("taggingan").value.trim();
-        let odc = document.getElementById("odc").value.trim();
-        let cp = document.getElementById("cp").value.trim();
-        let redaman = document.getElementById("redaman").value.trim();
-
-        if (!nama || !alamat || !nd || !odp || !taggingan || !odc || !cp || !redaman) {
-            alert("Harap isi semua bidang.");
-            return;
-        }
-
-        let newData = { nama, alamat, nd, odp, taggingan, odc, cp, redaman };
+        let newData = {
+            nama: document.getElementById("nama").value,
+            alamat: document.getElementById("alamat").value,
+            nd: document.getElementById("nd").value,
+            odp: document.getElementById("odp").value,
+            taggingan: document.getElementById("taggingan").value,
+            odc: document.getElementById("odc").value,
+            cp: document.getElementById("cp").value,
+            redaman: document.getElementById("redaman").value
+        };
+        
         dataTeknisi.push(newData);
         localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
 
@@ -197,9 +196,13 @@
         window.location.href = "index.html";
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    window.onload = function() {
+        if (!currentUser) {
+            localStorage.setItem("username", "24960059");
+            currentUser = "24960059";
+        }
         loadData();
-    });
+    };
 </script>
 
 </body>
