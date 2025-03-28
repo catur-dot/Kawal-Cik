@@ -4,14 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Teknisi</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: darkred; color: white; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Dashboard Teknisi</h2>
-        <p>Selamat datang, Teknisi!</p>
-        <button onclick="logout()">Logout</button>
-    </div>
-    <script src="script.js"></script>
+    <h2>Dashboard Teknisi</h2>
+    <table>
+        <tr>
+            <th>START</th>
+            <th>COMPLETE</th>
+            <th>ORDERID</th>
+            <th>SOURCE</th>
+            <th>ORDER STATE</th>
+            <th>TYPE</th>
+            <th>PROSES</th>
+            <th>REF</th>
+            <th>TASK</th>
+        </tr>
+        <tr>
+            <td>03/23/2025 04:54:16 PM</td>
+            <td>-</td>
+            <td>49633243</td>
+            <td>SOM_ProvisionServiceOrderFulfillment</td>
+            <td>In Progress</td>
+            <td>SOM_ProvisionServiceOrderFulfillment</td>
+            <td>SOM_FalloutProcess</td>
+            <td>SMBDFLZN6BBF70MSAOEY99PFTA...</td>
+            <td>UpdateDesignTask</td>
+        </tr>
+    </table>
 </body>
 </html>
