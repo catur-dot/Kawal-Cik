@@ -73,18 +73,18 @@
         }
     </style>
 </head>
-<body onload="loadData()">
+<body onload="checkUserRole()">
 
 <div class="container">
     <h2>Dashboard Teknisi</h2>
     <button class="btn-logout" onclick="logout()">Logout</button>
-    
+
     <div class="search-bar">
-        <input type="text" id="search" placeholder="Cari Nama atau ODP">
+        <input type="text" id="search" placeholder="Cari Internet atau Nama">
         <button onclick="searchOrder()">Search</button>
     </div>
-    
-    <button class="btn-add" id="btn-add" onclick="openModal()">Tambah Data</button>
+
+    <button class="btn-add" onclick="openModal()" id="btn-add">Tambah Data</button>
 
     <table id="orderTable">
         <thead>
@@ -122,8 +122,46 @@
 
 <script>
     let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
-    let username = localStorage.getItem("username");
-    let isSuperAdmin = username === "24960059";
+    let userRole = localStorage.getItem("userRole");
+
+    function checkUserRole() {
+        if (userRole !== "superadmin") {
+            document.getElementById("btn-add").style.display = "none";
+        }
+        loadData();
+    }
+
+    function openModal() {
+        if (userRole === "superadmin") {
+            document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki izin untuk menambah data");
+        }
+    }
+
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
+    function addData() {
+        let nama = document.getElementById("nama").value;
+        let alamat = document.getElementById("alamat").value;
+        let nd = document.getElementById("nd").value;
+        let odp = document.getElementById("odp").value;
+        let taggingan = document.getElementById("taggingan").value;
+        let odc = document.getElementById("odc").value;
+        let cp = document.getElementById("cp").value;
+        let redaman = document.getElementById("redaman").value;
+
+        if (nama && alamat && nd && odp && taggingan && odc && cp && redaman) {
+            dataTeknisi.push({ nama, alamat, nd, odp, taggingan, odc, cp, redaman });
+            localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
+            loadData();
+            closeModal();
+        } else {
+            alert("Semua kolom harus diisi!");
+        }
+    }
 
     function loadData() {
         let tableBody = document.querySelector("#orderTable tbody");
@@ -139,50 +177,17 @@
                 <td>${item.odc}</td>
                 <td>${item.cp}</td>
                 <td>${item.redaman}</td>
-                <td>${isSuperAdmin ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+                ${userRole === "superadmin" ? `<td><button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button></td>` : ""}
             </tr>`;
             tableBody.innerHTML += row;
         });
-        document.getElementById("btn-add").style.display = isSuperAdmin ? "block" : "none";
-    }
-
-    function openModal() {
-        if (isSuperAdmin) {
-            document.getElementById("dataModal").style.display = "block";
-        }
-    }
-
-    function closeModal() {
-        document.getElementById("dataModal").style.display = "none";
-    }
-
-    function addData() {
-        let newData = {
-            nama: document.getElementById("nama").value,
-            alamat: document.getElementById("alamat").value,
-            nd: document.getElementById("nd").value,
-            odp: document.getElementById("odp").value,
-            taggingan: document.getElementById("taggingan").value,
-            odc: document.getElementById("odc").value,
-            cp: document.getElementById("cp").value,
-            redaman: document.getElementById("redaman").value
-        };
-        dataTeknisi.push(newData);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        closeModal();
-        loadData();
-    }
-
-    function deleteRow(index) {
-        dataTeknisi.splice(index, 1);
-        localStorage.setItem("dataTeknisi", JSON.stringify(dataTeknisi));
-        loadData();
     }
 
     function logout() {
-        localStorage.removeItem("username");
         window.location.href = "login.html";
     }
+
+    loadData();
 </script>
 </body>
 </html>
