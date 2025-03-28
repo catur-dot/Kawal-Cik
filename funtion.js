@@ -21,14 +21,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            if (username === "admin" && password === "1234") {
-                localStorage.setItem("isLoggedIn", "true");
-                localStorage.setItem("userRole", role);
+            // Daftar user dan role
+            let users = {
+                "24960059": { password: "telkom135", role: "teamleader" },
+                "admin": { password: "telkom135", role: "teknisi" }
+            };
 
-                if (role === "teknisi") {
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem("isLoggedIn", "true");
+                localStorage.setItem("userRole", users[username].role);
+
+                if (users[username].role === "teknisi") {
                     window.location.href = "dashboard_teknisi.html";
-                } else {
+                } else if (users[username].role === "teamleader") {
                     window.location.href = "dashboard_teamleader.html";
+                } else {
+                    window.location.href = "index.html";
                 }
             } else {
                 message.style.color = "red";
@@ -37,18 +45,30 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    if (window.location.pathname.includes("dashboard_teknisi.html") || window.location.pathname.includes("dashboard_teamleader.html")) {
-        if (localStorage.getItem("isLoggedIn") !== "true") {
+    // Halaman Teknisi (Hanya Bisa View)
+    if (window.location.pathname.includes("dashboard_teknisi.html")) {
+        if (localStorage.getItem("userRole") !== "teknisi") {
+            window.location.href = "index.html";
+        }
+        document.getElementById("adminActions").style.display = "none"; // Sembunyikan aksi admin
+    }
+
+    // Halaman Team Leader
+    if (window.location.pathname.includes("dashboard_teamleader.html")) {
+        if (localStorage.getItem("userRole") !== "teamleader") {
             window.location.href = "index.html";
         }
     }
-});
 
-function logout() {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userRole");
-    window.location.href = "index.html";
-}
+    // Logout Function
+    if (document.getElementById("logoutButton")) {
+        document.getElementById("logoutButton").addEventListener("click", function () {
+            localStorage.removeItem("isLoggedIn");
+            localStorage.removeItem("userRole");
+            window.location.href = "index.html";
+        });
+    }
+});
 
 // Captcha Generator
 function generateCaptcha() {
