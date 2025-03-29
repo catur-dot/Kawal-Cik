@@ -40,10 +40,14 @@
     <p>Registered: <span id="registered">0</span> | Online: <span id="online">0</span> | Offline: <span id="offline">0</span></p>
     
     <div class="container" id="ponContainer"></div>
-    <button onclick="addData()">Tambah Data</button>
 
     <script>
-       let ponData = [];
+       let ponData = [
+            { name: "LOS", ONU: 0, status: "online" },
+            { name: "ONLINE", ONU: 0, status: "online" },
+            { name: "UNSPEC", ONU: 0, status: "online" },
+            { name: "ALL", ONU: 0, status: "offline" }
+        ];
 
         function updateDashboard() {
             const ponContainer = document.getElementById("ponContainer");
@@ -66,7 +70,7 @@
                 card.innerHTML = `
                     <div class="status-icon ${pon.status}">⬤</div>
                     <p><strong>${pon.name}</strong></p>
-                    <p>ONU: ${pon.ONU}</p>
+                    <p>ONU: <span id="${pon.name}-onu">${pon.ONU}</span></p>
                 `;
                 card.onclick = () => window.location.href = `detail.html?name=${pon.name}`;
                 ponContainer.appendChild(card);
@@ -75,17 +79,6 @@
             document.getElementById("registered").innerText = totalRegistered;
             document.getElementById("online").innerText = totalOnline;
             document.getElementById("offline").innerText = totalOffline;
-        }
-
-        function addData() {
-            const newName = prompt("Masukkan nama:");
-            const newONU = parseInt(prompt("Masukkan jumlah ONU:")) || 0;
-            const newStatus = confirm("Apakah status Online?") ? "online" : "offline";
-            
-            if (newName) {
-                ponData.push({ name: newName, ONU: newONU, status: newStatus });
-                updateDashboard();
-            }
         }
 
         updateDashboard();
