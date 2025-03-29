@@ -39,14 +39,10 @@
     <p>Registered: <span id="registered">0</span> | Online: <span id="online">0</span> | Offline: <span id="offline">0</span></p>
     
     <div class="container" id="ponContainer"></div>
+    <button onclick="addData()">Tambah Data</button>
 
     <script>
-       const ponData = [
-            { name: "LOS", ONU: 40, online: 34, offline: 6, status: "online" },
-            { name: "ONLINE", ONU: 17, online: 16, offline: 1, status: "online" },
-            { name: "UNSPEC", ONU: 36, online: 34, offline: 2, status: "online" },
-            { name: "ALL", ONU: 97, online: 88, offline: 9, status: "offline" }
-];
+       let ponData = [];
 
         function updateDashboard() {
             const ponContainer = document.getElementById("ponContainer");
@@ -57,24 +53,30 @@
             let totalOffline = 0;
             
             ponData.forEach(pon => {
-                totalRegistered += pon.registered;
-                totalOnline += pon.online;
-                totalOffline += pon.offline;
+                totalRegistered += pon.ONU;
                 
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.innerHTML = `
                     <div class="status-icon ${pon.status}">⬤</div>
-                    <p><strong>${pon.name}: ${pon.status.charAt(0).toUpperCase() + pon.status.slice(1)}</strong></p>
+                    <p><strong>${pon.name}</strong></p>
                     <p>ONU: ${pon.ONU}</p>
-                
                 `;
                 ponContainer.appendChild(card);
             });
             
             document.getElementById("registered").innerText = totalRegistered;
-            document.getElementById("online").innerText = totalOnline;
-            document.getElementById("offline").innerText = totalOffline;
+        }
+
+        function addData() {
+            const newName = prompt("Masukkan nama:");
+            const newONU = parseInt(prompt("Masukkan jumlah ONU:")) || 0;
+            const newStatus = confirm("Apakah status Online?") ? "online" : "offline";
+            
+            if (newName) {
+                ponData.push({ name: newName, ONU: newONU, status: newStatus });
+                updateDashboard();
+            }
         }
 
         updateDashboard();
