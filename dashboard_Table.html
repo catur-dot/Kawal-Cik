@@ -22,6 +22,7 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 200px;
+            cursor: pointer;
         }
         .status-icon {
             font-size: 40px;
@@ -49,8 +50,6 @@
             ponContainer.innerHTML = "";
             
             let totalRegistered = 0;
-            let totalOnline = 0;
-            let totalOffline = 0;
             
             ponData.forEach(pon => {
                 totalRegistered += pon.ONU;
@@ -62,6 +61,7 @@
                     <p><strong>${pon.name}</strong></p>
                     <p>ONU: ${pon.ONU}</p>
                 `;
+                card.onclick = () => window.location.href = `detail.html?name=${pon.name}`;
                 ponContainer.appendChild(card);
             });
             
