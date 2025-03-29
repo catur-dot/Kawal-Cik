@@ -50,9 +50,16 @@
             ponContainer.innerHTML = "";
             
             let totalRegistered = 0;
+            let totalOnline = 0;
+            let totalOffline = 0;
             
             ponData.forEach(pon => {
                 totalRegistered += pon.ONU;
+                if (pon.status === "online") {
+                    totalOnline += pon.ONU;
+                } else {
+                    totalOffline += pon.ONU;
+                }
                 
                 const card = document.createElement("div");
                 card.classList.add("card");
@@ -66,6 +73,8 @@
             });
             
             document.getElementById("registered").innerText = totalRegistered;
+            document.getElementById("online").innerText = totalOnline;
+            document.getElementById("offline").innerText = totalOffline;
         }
 
         function addData() {
