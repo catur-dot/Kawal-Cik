@@ -19,10 +19,31 @@
             padding: 10px;
             border: 1px solid #ddd;
         }
+        input {
+            padding: 8px;
+            margin: 5px;
+        }
+        button {
+            padding: 8px 16px;
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
+
+    <h3>Tambah Data Teknisi</h3>
+    <form id="addForm">
+        <input type="text" id="nama" placeholder="Nama" required><br>
+        <input type="text" id="alamat" placeholder="Alamat" required><br>
+        <input type="text" id="nd" placeholder="ND" required><br>
+        <input type="text" id="odp" placeholder="ODP" required><br>
+        <input type="text" id="taggingan" placeholder="Taggingan Rumah" required><br>
+        <input type="text" id="odc" placeholder="ODC" required><br>
+        <input type="text" id="cp" placeholder="CP" required><br>
+        <input type="text" id="redaman" placeholder="Redaman" required><br>
+        <button type="submit">Tambah</button>
+    </form>
 
     <table id="orderTable">
         <thead>
@@ -49,31 +70,63 @@
         const status = urlParams.get('status');
         document.getElementById("status-name").innerText = status;
 
-        // Menampilkan data teknisi berdasarkan status
-        const teknisiData = [
-            { nama: "John Doe", alamat: "Jalan Merdeka 123", nd: "ND1", odp: "ODP1", taggingan: "RT1", odc: "ODC1", cp: "CP1", redaman: "10" },
-            { nama: "Jane Smith", alamat: "Jalan Raya 456", nd: "ND2", odp: "ODP2", taggingan: "RT2", odc: "ODC2", cp: "CP2", redaman: "15" },
-            // Anda bisa menambahkan data lain sesuai status yang dipilih
-        ];
+        // Memuat data teknisi dari localStorage
+        let teknisiData = JSON.parse(localStorage.getItem("teknisiData")) || [];
 
-        // Menampilkan data di tabel
-        const tableBody = document.querySelector("#orderTable tbody");
-        teknisiData.forEach((item, index) => {
-            let row = `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${item.nama}</td>
-                    <td>${item.alamat}</td>
-                    <td>${item.nd}</td>
-                    <td>${item.odp}</td>
-                    <td>${item.taggingan}</td>
-                    <td>${item.odc}</td>
-                    <td>${item.cp}</td>
-                    <td>${item.redaman}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
+        // Fungsi untuk menampilkan data di tabel
+        function loadTableData() {
+            const tableBody = document.querySelector("#orderTable tbody");
+            tableBody.innerHTML = ""; // Clear previous rows
+
+            teknisiData.forEach((item, index) => {
+                let row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.alamat}</td>
+                        <td>${item.nd}</td>
+                        <td>${item.odp}</td>
+                        <td>${item.taggingan}</td>
+                        <td>${item.odc}</td>
+                        <td>${item.cp}</td>
+                        <td>${item.redaman}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // Fungsi untuk menambahkan data teknisi
+        function addData(event) {
+            event.preventDefault(); // Mencegah form submit default
+
+            const newData = {
+                nama: document.getElementById("nama").value,
+                alamat: document.getElementById("alamat").value,
+                nd: document.getElementById("nd").value,
+                odp: document.getElementById("odp").value,
+                taggingan: document.getElementById("taggingan").value,
+                odc: document.getElementById("odc").value,
+                cp: document.getElementById("cp").value,
+                redaman: document.getElementById("redaman").value
+            };
+
+            // Menambahkan data ke array dan menyimpannya di localStorage
+            teknisiData.push(newData);
+            localStorage.setItem("teknisiData", JSON.stringify(teknisiData));
+
+            // Clear input form
+            document.getElementById("addForm").reset();
+
+            // Memuat ulang data di tabel
+            loadTableData();
+        }
+
+        // Menambahkan event listener ke form
+        document.getElementById("addForm").addEventListener("submit", addData);
+
+        // Menampilkan data pada tabel
+        loadTableData();
     </script>
 </body>
 </html>
