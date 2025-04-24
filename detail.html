@@ -46,13 +46,21 @@
         .form-row button {
             width: 20%;
         }
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Align buttons horizontally */
+            margin: 20px auto;
+            width: 80%;
+        }
     </style>
 </head>
 <body>
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
 
-    <!-- Move the "Tambah Data Teknisi" button above the table -->
-    <button onclick="toggleForm()">Tambah Data Teknisi</button> <!-- Show form when clicked -->
+    <!-- Container for the "Tambah Data Teknisi" button and "Hapus" button -->
+    <div class="button-container">
+        <button onclick="toggleForm()">Tambah Data Teknisi</button> <!-- Show form when clicked -->
+    </div>
 
     <div id="formContainer" class="form-container">
         <h3>Tambah Data Teknisi</h3>
