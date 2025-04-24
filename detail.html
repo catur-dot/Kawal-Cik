@@ -96,6 +96,7 @@
                 <th>ODC</th>
                 <th>CP</th>
                 <th>REDAMAN</th>
+                <th>ACTION</th>
             </tr>
         </thead>
         <tbody>
@@ -129,6 +130,7 @@
                         <td>${item.odc}</td>
                         <td>${item.cp}</td>
                         <td>${item.redaman}</td>
+                        <td><button onclick="deleteRow(${index})">Hapus</button></td>
                     </tr>
                 `;
                 tableBody.innerHTML += row;
@@ -168,6 +170,13 @@
         function toggleForm() {
             const formContainer = document.getElementById("formContainer");
             formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+        }
+
+        // Function to delete a row from the table
+        function deleteRow(index) {
+            teknisiData.splice(index, 1); // Remove the item from the array
+            localStorage.setItem("teknisiData", JSON.stringify(teknisiData)); // Save the updated array in localStorage
+            loadTableData(); // Reload the table data
         }
 
         // Load data when page loads
