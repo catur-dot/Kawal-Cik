@@ -33,15 +33,6 @@
         .online {
             color: dodgerblue;
         }
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-        }
     </style>
 </head>
 <body>
@@ -50,42 +41,12 @@
     
     <div class="container" id="ponContainer"></div>
 
-    <div id="tableContainer" style="display: none;">
-        <h3>Data Teknisi</h3>
-        <table id="orderTable">
-            <thead>
-                <tr>
-                    <th>NO</th>
-                    <th>NAMA</th>
-                    <th>ALAMAT</th>
-                    <th>ND</th>
-                    <th>ODP</th>
-                    <th>TAGGINGAN RUMAH</th>
-                    <th>ODC</th>
-                    <th>CP</th>
-                    <th>REDAMAN</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Data will be inserted dynamically here -->
-            </tbody>
-        </table>
-    </div>
-
     <script>
        let ponData = [
             { name: "LOS", ONU: 0, status: "online" },
             { name: "ONLINE", ONU: 0, status: "online" },
             { name: "UNSPEC", ONU: 0, status: "online" },
             { name: "ALL", ONU: 0, status: "offline" }
-        ];
-
-        // Sample data for table, replace with actual data
-        const teknisiData = [
-            { nama: "John Doe", alamat: "Jalan Merdeka 123", nd: "ND1", odp: "ODP1", taggingan: "RT1", odc: "ODC1", cp: "CP1", redaman: "10" },
-            { nama: "Jane Smith", alamat: "Jalan Raya 456", nd: "ND2", odp: "ODP2", taggingan: "RT2", odc: "ODC2", cp: "CP2", redaman: "15" },
-            // Add more data here...
         ];
 
         function updateDashboard() {
@@ -111,44 +72,16 @@
                     <p><strong>${pon.name}</strong></p>
                     <p>ONU: <span id="${pon.name}-onu">${pon.ONU}</span></p>
                 `;
-                card.onclick = () => showTable(pon.name); // Show table when clicked
+                card.onclick = () => {
+                    // Mengalihkan ke halaman detail.html dengan mengirimkan status yang dipilih
+                    window.location.href = `detail.html?status=${pon.name}`;
+                };
                 ponContainer.appendChild(card);
             });
             
             document.getElementById("registered").innerText = totalRegistered;
             document.getElementById("online").innerText = totalOnline;
             document.getElementById("offline").innerText = totalOffline;
-        }
-
-        // Function to display table based on the clicked status
-        function showTable(status) {
-            const tableContainer = document.getElementById("tableContainer");
-            const tableBody = document.querySelector("#orderTable tbody");
-
-            // Clear the previous table data
-            tableBody.innerHTML = "";
-
-            // Show the table container
-            tableContainer.style.display = "block";
-
-            // Insert relevant data based on the clicked status
-            teknisiData.forEach((item, index) => {
-                let row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.nama}</td>
-                        <td>${item.alamat}</td>
-                        <td>${item.nd}</td>
-                        <td>${item.odp}</td>
-                        <td>${item.taggingan}</td>
-                        <td>${item.odc}</td>
-                        <td>${item.cp}</td>
-                        <td>${item.redaman}</td>
-                        <td><button class='btn-delete'>Hapus</button></td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row;
-            });
         }
 
         updateDashboard();
