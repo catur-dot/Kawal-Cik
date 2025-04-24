@@ -22,7 +22,7 @@
         input {
             padding: 8px;
             margin: 5px;
-            width: 80%; /* Make input fields consistent */
+            width: 80%;
         }
         button {
             padding: 8px 16px;
@@ -33,6 +33,7 @@
             width: 80%;
             margin: 20px auto;
             text-align: left;
+            display: none; /* Initially hide the form */
         }
         .form-row {
             display: flex;
@@ -40,44 +41,48 @@
             justify-content: space-between;
         }
         .form-row input {
-            width: 75%; /* Adjust width of inputs */
+            width: 75%;
         }
         .form-row button {
-            width: 20%; /* Button width next to the input */
+            width: 20%;
         }
     </style>
 </head>
 <body>
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
 
-    <h3>Tambah Data Teknisi</h3>
-    <form id="addForm" class="form-container">
-        <div class="form-row">
-            <input type="text" id="nama" placeholder="Nama" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="alamat" placeholder="Alamat" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="nd" placeholder="ND" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="odp" placeholder="ODP" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="taggingan" placeholder="Taggingan Rumah" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="odc" placeholder="ODC" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="cp" placeholder="CP" required>
-        </div>
-        <div class="form-row">
-            <input type="text" id="redaman" placeholder="Redaman" required>
-            <button type="submit">Tambah</button>
-        </div>
-    </form>
+    <button onclick="toggleForm()">Tambah Data Teknisi</button> <!-- Show form when clicked -->
+
+    <div id="formContainer" class="form-container">
+        <h3>Tambah Data Teknisi</h3>
+        <form id="addForm">
+            <div class="form-row">
+                <input type="text" id="nama" placeholder="Nama" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="alamat" placeholder="Alamat" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="nd" placeholder="ND" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="odp" placeholder="ODP" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="taggingan" placeholder="Taggingan Rumah" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="odc" placeholder="ODC" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="cp" placeholder="CP" required>
+            </div>
+            <div class="form-row">
+                <input type="text" id="redaman" placeholder="Redaman" required>
+                <button type="submit">Tambah</button>
+            </div>
+        </form>
+    </div>
 
     <table id="orderTable">
         <thead>
@@ -158,6 +163,12 @@
 
         // Menambahkan event listener ke form
         document.getElementById("addForm").addEventListener("submit", addData);
+
+        // Fungsi untuk menampilkan atau menyembunyikan form
+        function toggleForm() {
+            const formContainer = document.getElementById("formContainer");
+            formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
+        }
 
         // Menampilkan data pada tabel
         loadTableData();
