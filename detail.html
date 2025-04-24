@@ -22,7 +22,7 @@
         input {
             padding: 8px;
             margin: 5px;
-            width: 80%; /* Make input fields consistent */
+            width: 80%;
         }
         button {
             padding: 8px 16px;
@@ -41,16 +41,17 @@
             justify-content: space-between;
         }
         .form-row input {
-            width: 75%; /* Adjust width of inputs */
+            width: 75%;
         }
         .form-row button {
-            width: 20%; /* Button width next to the input */
+            width: 20%;
         }
     </style>
 </head>
 <body>
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
 
+    <!-- Move the "Tambah Data Teknisi" button above the table -->
     <button onclick="toggleForm()">Tambah Data Teknisi</button> <!-- Show form when clicked -->
 
     <div id="formContainer" class="form-container">
@@ -84,6 +85,7 @@
         </form>
     </div>
 
+    <!-- Table with "Hapus" button next to each row -->
     <table id="orderTable">
         <thead>
             <tr>
