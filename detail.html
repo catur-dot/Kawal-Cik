@@ -22,10 +22,28 @@
         input {
             padding: 8px;
             margin: 5px;
+            width: 80%; /* Make input fields consistent */
         }
         button {
             padding: 8px 16px;
             margin: 5px;
+            cursor: pointer;
+        }
+        .form-container {
+            width: 80%;
+            margin: 20px auto;
+            text-align: left;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .form-row input {
+            width: 75%; /* Adjust width of inputs */
+        }
+        .form-row button {
+            width: 20%; /* Button width next to the input */
         }
     </style>
 </head>
@@ -33,16 +51,32 @@
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
 
     <h3>Tambah Data Teknisi</h3>
-    <form id="addForm">
-        <input type="text" id="nama" placeholder="Nama" required><br>
-        <input type="text" id="alamat" placeholder="Alamat" required><br>
-        <input type="text" id="nd" placeholder="ND" required><br>
-        <input type="text" id="odp" placeholder="ODP" required><br>
-        <input type="text" id="taggingan" placeholder="Taggingan Rumah" required><br>
-        <input type="text" id="odc" placeholder="ODC" required><br>
-        <input type="text" id="cp" placeholder="CP" required><br>
-        <input type="text" id="redaman" placeholder="Redaman" required><br>
-        <button type="submit">Tambah</button>
+    <form id="addForm" class="form-container">
+        <div class="form-row">
+            <input type="text" id="nama" placeholder="Nama" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="alamat" placeholder="Alamat" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="nd" placeholder="ND" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="odp" placeholder="ODP" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="taggingan" placeholder="Taggingan Rumah" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="odc" placeholder="ODC" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="cp" placeholder="CP" required>
+        </div>
+        <div class="form-row">
+            <input type="text" id="redaman" placeholder="Redaman" required>
+            <button type="submit">Tambah</button>
+        </div>
     </form>
 
     <table id="orderTable">
