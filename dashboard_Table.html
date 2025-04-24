@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Dashboard</title>
+    <title>Dasbor Status</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -36,7 +36,7 @@
     </style>
 </head>
 <body>
-    <h2>Status Dashboard</h2>
+    <h2>Dasbor Status</h2>
     <p>LOS: <span id="registered">0</span> | Online: <span id="online">0</span> | Offline: <span id="offline">0</span></p>
     
     <div class="container" id="ponContainer"></div>
@@ -85,3 +85,63 @@
     </script>
 </body>
 </html>
+
+<!-- Kode yang diminta ditambahkan di bagian script -->
+<script>
+    let dataTeknisi = JSON.parse(localStorage.getItem("dataTeknisi")) || [];
+    let currentUser = localStorage.getItem("username");
+
+    console.log("User login:", currentUser); // Debugging
+
+    function loadData() {
+        let tableBody = document.querySelector("#orderTable tbody");
+        tableBody.innerHTML = "";
+
+        dataTeknisi.forEach((item, index) => {
+            let row = `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.nama}</td>
+                    <td>${item.alamat}</td>
+                    <td>${item.nd}</td>
+                    <td>${item.odp}</td>
+                    <td>${item.taggingan}</td>
+                    <td>${item.odc}</td>
+                    <td>${item.cp}</td>
+                    <td>${item.redaman}</td>
+                    <td>${currentUser === "24960059" ? `<button class='btn-delete' onclick='deleteRow(${index})'>Hapus</button>` : ""}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+
+        if (currentUser === "24960059") {
+            document.getElementById("btn-add").style.display = "block";
+        }
+    }
+
+    function openModal() {
+        if (currentUser === "24960059") {
+            document.getElementById("dataModal").style.display = "block";
+        } else {
+            alert("Anda tidak memiliki akses untuk menambah data.");
+        }
+    }
+
+    function closeModal() {
+        document.getElementById("dataModal").style.display = "none";
+    }
+
+    function addData() {
+        let newData = {
+            nama: document.getElementById("nama").value,
+            alamat: document.getElementById("alamat").value,
+            nd: document.getElementById("nd").value,
+            odp: document.getElementById("odp").value,
+            taggingan: document.getElementById("taggingan").value,
+            odc: document.getElementById("odc").value,
+            cp: document.getElementById("cp").value,
+            redaman: document.getElementById("redaman").value
+        };
+    }
+</script>
