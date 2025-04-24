@@ -22,7 +22,7 @@
         input {
             padding: 8px;
             margin: 5px;
-            width: 80%;
+            width: 80%; /* Make input fields consistent */
         }
         button {
             padding: 8px 16px;
@@ -41,10 +41,10 @@
             justify-content: space-between;
         }
         .form-row input {
-            width: 75%;
+            width: 75%; /* Adjust width of inputs */
         }
         .form-row button {
-            width: 20%;
+            width: 20%; /* Button width next to the input */
         }
     </style>
 </head>
@@ -99,20 +99,20 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Data akan dimasukkan di sini -->
+            <!-- Data will be added here -->
         </tbody>
     </table>
 
     <script>
-        // Mendapatkan parameter status dari URL
+        // Getting status parameter from URL
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
         document.getElementById("status-name").innerText = status;
 
-        // Memuat data teknisi dari localStorage
+        // Load technician data from localStorage
         let teknisiData = JSON.parse(localStorage.getItem("teknisiData")) || [];
 
-        // Fungsi untuk menampilkan data di tabel
+        // Function to display data in the table
         function loadTableData() {
             const tableBody = document.querySelector("#orderTable tbody");
             tableBody.innerHTML = ""; // Clear previous rows
@@ -135,9 +135,9 @@
             });
         }
 
-        // Fungsi untuk menambahkan data teknisi
+        // Function to add new technician data
         function addData(event) {
-            event.preventDefault(); // Mencegah form submit default
+            event.preventDefault(); // Prevent default form submission
 
             const newData = {
                 nama: document.getElementById("nama").value,
@@ -150,27 +150,27 @@
                 redaman: document.getElementById("redaman").value
             };
 
-            // Menambahkan data ke array dan menyimpannya di localStorage
+            // Adding the new data to the array and saving it in localStorage
             teknisiData.push(newData);
             localStorage.setItem("teknisiData", JSON.stringify(teknisiData));
 
             // Clear input form
             document.getElementById("addForm").reset();
 
-            // Memuat ulang data di tabel
+            // Reload data in the table
             loadTableData();
         }
 
-        // Menambahkan event listener ke form
+        // Add event listener to the form
         document.getElementById("addForm").addEventListener("submit", addData);
 
-        // Fungsi untuk menampilkan atau menyembunyikan form
+        // Function to show or hide the form
         function toggleForm() {
             const formContainer = document.getElementById("formContainer");
             formContainer.style.display = formContainer.style.display === "none" ? "block" : "none";
         }
 
-        // Menampilkan data pada tabel
+        // Load data when page loads
         loadTableData();
     </script>
 </body>
