@@ -44,24 +44,37 @@
             width: 75%; /* Adjust width of inputs */
         }
         .form-row button {
-            width: 20%; /* Button width next to the input */
-        }
-        .button-container {
-            display: flex;
-            justify-content: space-between; /* Align buttons horizontally */
-            margin: 20px auto;
-            width: 80%;
+            width: 20%;
         }
     </style>
 </head>
 <body>
     <h2>Data Teknisi untuk Status: <span id="status-name"></span></h2>
 
-    <!-- Container for the "Tambah Data Teknisi" button and "Hapus" button -->
-    <div class="button-container">
-        <button onclick="toggleForm()">Tambah Data Teknisi</button> <!-- Show form when clicked -->
-    </div>
+    <!-- Remove "Tambah Data Teknisi" button from the top -->
+    
+    <!-- Table with "Tambah" button in the action column -->
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>NO</th>
+                <th>NAMA</th>
+                <th>ALAMAT</th>
+                <th>ND</th>
+                <th>ODP</th>
+                <th>TAGGINGAN RUMAH</th>
+                <th>ODC</th>
+                <th>CP</th>
+                <th>REDAMAN</th>
+                <th>ACTION</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data will be added here -->
+        </tbody>
+    </table>
 
+    <!-- Form to add new technician data, initially hidden -->
     <div id="formContainer" class="form-container">
         <h3>Tambah Data Teknisi</h3>
         <form id="addForm">
@@ -92,27 +105,6 @@
             </div>
         </form>
     </div>
-
-    <!-- Table with "Hapus" button next to each row -->
-    <table id="orderTable">
-        <thead>
-            <tr>
-                <th>NO</th>
-                <th>NAMA</th>
-                <th>ALAMAT</th>
-                <th>ND</th>
-                <th>ODP</th>
-                <th>TAGGINGAN RUMAH</th>
-                <th>ODC</th>
-                <th>CP</th>
-                <th>REDAMAN</th>
-                <th>ACTION</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Data will be added here -->
-        </tbody>
-    </table>
 
     <script>
         // Getting status parameter from URL
